@@ -6,7 +6,7 @@
   <title>CHRONO DECK 1985 // 時空磁軸</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=M+PLUS+1p:wght@400;500;700&family=VT323&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 
   <style>
@@ -43,7 +43,7 @@
       position: relative;
     }
 
-    /* Space Trip 橫移星空背景 */
+    /* Space Trip 星空畫布背景 */
     #starfield {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -58,14 +58,14 @@
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 22px;
+      gap: 20px;
     }
 
-    /* ===== 1. 網站最頂端獨立主標題 ===== */
+    /* ===== 1. 頂部大標題 ===== */
     .site-master-header {
       width: 100%;
       text-align: center;
-      padding: 10px 0 16px;
+      padding: 10px 0 14px;
       border-bottom: 1px solid #1f2530;
     }
     .site-main-title {
@@ -258,17 +258,22 @@
       -webkit-appearance: none; width: 8px; height: 8px; border-radius: 50%; background: var(--amber);
     }
 
-    /* ===== 3. 標籤雲快速點選區 (Tag Cloud Panel) ===== */
+    /* ===== 3. 可折疊標籤雲面板 ===== */
     .tag-cloud-panel {
       width: 100%;
-      background: rgba(14, 17, 23, 0.8);
+      background: rgba(14, 17, 23, 0.85);
       border: 1px solid #252b38;
       border-radius: 6px;
-      padding: 12px 18px;
+      padding: 10px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .tag-cloud-top-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 16px;
+      gap: 12px;
       flex-wrap: wrap;
     }
     .tag-cloud-left {
@@ -280,38 +285,58 @@
     }
     .tag-cloud-label {
       font-family: var(--font-tech);
-      font-size: 0.76rem;
+      font-size: 0.75rem;
       font-weight: 700;
       color: var(--amber);
       letter-spacing: 0.12em;
-      margin-right: 6px;
     }
     .cloud-tag {
       background: rgba(26, 30, 40, 0.85);
       border: 1px solid #2c3445;
       color: #9aa5b8;
-      padding: 4px 12px;
+      padding: 3px 10px;
       border-radius: 12px;
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       letter-spacing: 0.05em;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.15s ease;
       user-select: none;
     }
     .cloud-tag:hover {
       border-color: var(--cyan);
       color: #ffffff;
-      box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
     }
     .cloud-tag.active {
       background: rgba(56, 189, 248, 0.15);
       border-color: var(--cyan);
       color: var(--cyan);
       font-weight: 700;
-      box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
     }
 
-    /* 管理工具欄 */
+    /* 折疊切換按鈕 */
+    .expand-toggle-btn {
+      background: transparent;
+      border: 1px solid #3d4656;
+      color: #8fa0b5;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-family: var(--font-tech);
+      font-size: 0.72rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .expand-toggle-btn:hover { border-color: var(--amber); color: var(--amber); }
+
+    /* 抽屜內標籤區域 */
+    .overflow-tags-drawer {
+      display: none;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding-top: 8px;
+      border-top: 1px dashed #28303d;
+    }
+    .overflow-tags-drawer.expanded { display: flex; }
+
     .admin-group button {
       background: #181b22;
       color: #c4c9d4;
@@ -615,20 +640,29 @@
       <div class="rack-bolt"></div>
     </section>
 
-    <!-- 3. 標籤雲快速點選區 (Tag Cloud) 與管理按鍵 -->
+    <!-- 3. 可折疊標籤雲面板 -->
     <section class="tag-cloud-panel">
-      <div class="tag-cloud-left" id="tagCloudContainer">
-        <span class="tag-cloud-label">TAG CLOUD:</span>
-        <button class="cloud-tag active" onclick="filterByTag('ALL')">ALL 全部</button>
+      <div class="tag-cloud-top-row">
+        <div class="tag-cloud-left" id="primaryTagsContainer">
+          <span class="tag-cloud-label">TAGS:</span>
+          <!-- 主標籤由 JS 動態渲染 -->
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <button class="expand-toggle-btn" id="expandTagsBtn" onclick="toggleTagsDrawer()">[+] EXPAND TAGS</button>
+          
+          <div class="admin-group">
+            <button id="addCardBtn">+ 新增</button>
+            <button id="toggleEditBtn">EDIT 模式</button>
+            <button id="exportBtn">匯出 JSON</button>
+            <button onclick="document.getElementById('importFile').click()">匯入 JSON</button>
+            <input type="file" id="importFile" accept=".json" style="display:none;">
+          </div>
+        </div>
       </div>
 
-      <div class="admin-group">
-        <button id="addCardBtn">+ 新增</button>
-        <button id="toggleEditBtn">EDIT 模式</button>
-        <button id="exportBtn">匯出 JSON</button>
-        <button onclick="document.getElementById('importFile').click()">匯入 JSON</button>
-        <input type="file" id="importFile" accept=".json" style="display:none;">
-      </div>
+      <!-- 超額標籤折疊抽屜 -->
+      <div class="overflow-tags-drawer" id="overflowTagsDrawer"></div>
     </section>
 
     <!-- 4. 卡帶展示網格 -->
@@ -710,12 +744,13 @@
     }
     renderStars();
 
-    /* ===== 音訊管理與雙軌持久化核心 ===== */
+    /* ===== 音訊管理與雲端優先核心 ===== */
     const STORAGE_KEY = "CHRONO_DECK_1985_DATA";
     const REMOTE_JSON_URL = "./chrono_deck_1985_data.json";
 
     let isEditing = false;
     let isShuffle = false;
+    let isTagsExpanded = false;
     let activeTag = 'ALL';
     let currentTrackIndex = 0;
     let eqInterval = null;
@@ -746,7 +781,7 @@
         title: "きっと忘れない",
         artist: "ZARD",
         subtitle: "きっと忘れない (ZARD / 坂井泉水)",
-        tags: "ZARD, 抒情, 白鳥麗子, 經典",
+        tags: "ZARD, 抒情, 經典",
         audioUrl: "",
         coverUrl: "https://picsum.photos/600/400?grayscale&random=95",
         notes: "きっと忘れない 眩しい笑顔で\nWash away, 洗い流して\n遠く離れても 心はいつも\nあなたのそばにいるから..."
@@ -756,7 +791,9 @@
     let musicList = [];
 
     const gridContainer = document.getElementById('gridContainer');
-    const tagCloudContainer = document.getElementById('tagCloudContainer');
+    const primaryTagsContainer = document.getElementById('primaryTagsContainer');
+    const overflowTagsDrawer = document.getElementById('overflowTagsDrawer');
+    const expandTagsBtn = document.getElementById('expandTagsBtn');
     const trackSelect = document.getElementById('trackSelect');
     const audio = document.getElementById('globalAudio');
     const lcdTimer = document.getElementById('lcdTimer');
@@ -775,25 +812,31 @@
       }
     }
 
+    /* 雲端優先同步邏輯 */
     async function init() {
-      const localData = localStorage.getItem(STORAGE_KEY);
-      
-      if (localData) {
-        try {
-          musicList = JSON.parse(localData);
-        } catch(e) {
-          musicList = defaultMusicList;
+      let loadedFromRemote = false;
+
+      try {
+        const cacheBuster = `?t=${Date.now()}`;
+        const resp = await fetch(REMOTE_JSON_URL + cacheBuster, { cache: "no-store" });
+        if (resp.ok) {
+          musicList = await resp.json();
+          saveToStorage();
+          loadedFromRemote = true;
         }
-      } else {
-        try {
-          const resp = await fetch(REMOTE_JSON_URL);
-          if (resp.ok) {
-            musicList = await resp.json();
-            saveToStorage();
-          } else {
+      } catch(err) {
+        console.log("未連線至遠端 JSON，切換為本地模式");
+      }
+
+      if (!loadedFromRemote) {
+        const localData = localStorage.getItem(STORAGE_KEY);
+        if (localData) {
+          try {
+            musicList = JSON.parse(localData);
+          } catch(e) {
             musicList = defaultMusicList;
           }
-        } catch(err) {
+        } else {
           musicList = defaultMusicList;
         }
       }
@@ -807,7 +850,7 @@
       }
     }
 
-    /* ===== 標籤雲動態提取與渲染 ===== */
+    /* 標籤雲提取與折疊抽屜渲染 */
     function renderTagCloud() {
       const allTagsSet = new Set();
       musicList.forEach(item => {
@@ -816,23 +859,49 @@
         }
       });
 
-      tagCloudContainer.innerHTML = '<span class="tag-cloud-label">TAG CLOUD:</span>';
-      
-      // ALL 全部標籤
+      const tagsArray = Array.from(allTagsSet);
+      primaryTagsContainer.innerHTML = '<span class="tag-cloud-label">TAGS:</span>';
+      overflowTagsDrawer.innerHTML = '';
+
+      // ALL 按鍵
       const allBtn = document.createElement('button');
       allBtn.className = `cloud-tag ${activeTag === 'ALL' ? 'active' : ''}`;
       allBtn.innerText = 'ALL 全部';
       allBtn.onclick = () => filterByTag('ALL');
-      tagCloudContainer.appendChild(allBtn);
+      primaryTagsContainer.appendChild(allBtn);
 
-      // 動態標籤
-      allTagsSet.forEach(tag => {
+      const PRIMARY_LIMIT = 8; // 前 8 個標籤常駐顯示
+      const primaryTags = tagsArray.slice(0, PRIMARY_LIMIT);
+      const overflowTags = tagsArray.slice(PRIMARY_LIMIT);
+
+      primaryTags.forEach(tag => {
         const btn = document.createElement('button');
         btn.className = `cloud-tag ${activeTag === tag ? 'active' : ''}`;
         btn.innerText = `# ${tag}`;
         btn.onclick = () => filterByTag(tag);
-        tagCloudContainer.appendChild(btn);
+        primaryTagsContainer.appendChild(btn);
       });
+
+      if (overflowTags.length > 0) {
+        expandTagsBtn.style.display = 'inline-block';
+        expandTagsBtn.innerText = isTagsExpanded ? `[-] COLLAPSE` : `[+] MORE (${overflowTags.length})`;
+
+        overflowTags.forEach(tag => {
+          const btn = document.createElement('button');
+          btn.className = `cloud-tag ${activeTag === tag ? 'active' : ''}`;
+          btn.innerText = `# ${tag}`;
+          btn.onclick = () => filterByTag(tag);
+          overflowTagsDrawer.appendChild(btn);
+        });
+      } else {
+        expandTagsBtn.style.display = 'none';
+      }
+    }
+
+    function toggleTagsDrawer() {
+      isTagsExpanded = !isTagsExpanded;
+      overflowTagsDrawer.classList.toggle('expanded', isTagsExpanded);
+      renderTagCloud();
     }
 
     function filterByTag(tag) {
@@ -854,7 +923,6 @@
     function renderCards() {
       gridContainer.innerHTML = '';
       musicList.forEach((item, index) => {
-        // 標籤雲篩選邏輯
         const itemTags = item.tags ? item.tags.split(/[,，\s]+/).filter(Boolean) : [];
         const isVisible = activeTag === 'ALL' || itemTags.includes(activeTag) || item.artist === activeTag;
 
@@ -887,7 +955,7 @@
             <input type="text" value="${item.title}" onchange="updateTrackData(${index}, 'title', this.value)">
             <label>歌手：</label>
             <input type="text" value="${item.artist}" onchange="updateTrackData(${index}, 'artist', this.value)">
-            <label>曲目標籤 (逗號分隔)：</label>
+            <label>曲目標籤 (以逗號區隔)：</label>
             <input type="text" value="${item.tags || ''}" onchange="updateTrackData(${index}, 'tags', this.value)">
             <label>標註：</label>
             <input type="text" value="${item.subtitle || ''}" onchange="updateTrackData(${index}, 'subtitle', this.value)">
@@ -1050,8 +1118,8 @@
         id: Date.now(),
         title: "未命名曲目.mp3",
         artist: "自訂歌手",
-        tags: "新標籤, 自訂曲風",
-        subtitle: "未命名曲目 (新標籤)",
+        tags: "自訂標籤",
+        subtitle: "未命名曲目",
         audioUrl: "",
         coverUrl: "https://picsum.photos/600/400",
         notes: ""
@@ -1090,7 +1158,7 @@
           renderTagCloud();
           renderSelector();
           renderCards();
-          alert("CHRONO DECK 資料庫載入成功，已永久記錄至瀏覽器！");
+          alert("CHRONO DECK 資料庫載入成功，已同步至快取！");
         } catch(err) { alert("JSON 格式錯誤"); }
       };
       reader.readAsText(file);
