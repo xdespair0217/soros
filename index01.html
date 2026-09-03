@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>CASSETTE DECK SYSTEM - MASTER CONSOLE</title>
+  <title>CHRONO DECK 1985 // 時空磁軸</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -61,7 +61,7 @@
       gap: 18px;
     }
 
-    /* ===== 機架主控台 ===== */
+    /* ===== 機架主控台 (CHRONO MASTER RACK) ===== */
     .master-rack-deck {
       width: 100%;
       background: linear-gradient(180deg, #1b202a 0%, #101217 100%);
@@ -226,18 +226,35 @@
       -webkit-appearance: none; width: 8px; height: 8px; border-radius: 50%; background: var(--amber);
     }
 
-    /* ===== 次級副面板 ===== */
+    /* ===== 次級副面板（銘板標題、分類與管理） ===== */
     .sub-control-panel {
       width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 6px 14px;
+      padding: 8px 16px;
       background: rgba(14, 16, 21, 0.75);
       border: 1px solid #222733;
       border-radius: 5px;
       gap: 12px;
       flex-wrap: wrap;
+    }
+
+    .panel-brand-title {
+      font-family: var(--font-tech);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #ff5533;
+      letter-spacing: 0.12em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .panel-brand-sub {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      font-weight: 400;
+      letter-spacing: 0.05em;
     }
 
     .filter-group {
@@ -493,6 +510,9 @@
       .volume-ctrl-box { display: none; }
       .track-subtitle-box { width: 100%; }
 
+      .sub-control-panel { padding: 8px 10px; }
+      .panel-brand-title { font-size: 0.85rem; }
+
       .cassette-grid {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 14px;
@@ -562,12 +582,18 @@
       <div class="rack-bolt"></div>
     </header>
 
-    <!-- 分類與管理欄 -->
+    <!-- 次級副面板：正式烙印 CHRONO DECK 1985 銘牌 -->
     <div class="sub-control-panel">
+      <div class="panel-brand-title">
+        CHRONO DECK 1985
+        <span class="panel-brand-sub">// 時空磁軸</span>
+      </div>
+
       <div class="filter-group" id="filterBar">
         <span class="filter-label">ARTIST:</span>
         <button class="filter-btn active" onclick="setFilter('ALL')">ALL 全部</button>
       </div>
+
       <div class="admin-group">
         <button id="addCardBtn">+ 新增</button>
         <button id="toggleEditBtn">EDIT 模式</button>
@@ -585,16 +611,17 @@
   <div class="lightbox-backdrop" id="lightboxBackdrop" onclick="closeLightbox(event)">
     <div class="lightbox-modal">
       <div class="lightbox-header">
-        <span class="lightbox-tag" id="lbTag">CASSETTE ARCHIVE // TAPE DECK</span>
+        <span class="lightbox-tag" id="lbTag">CHRONO DECK 1985 // REEL ARCHIVE</span>
         <button class="lightbox-close" onclick="closeLightboxDirect()">✕</button>
       </div>
       <div class="lightbox-body">
         <div>
           <img class="lightbox-cover" id="lbCover" src="" alt="Album Cover">
           <div class="lightbox-meta-box">
+            <div>SYSTEM: CHRONO DECK 1985</div>
             <div>STATUS: LOADED</div>
             <div>STREAM: HI-RES 44.1kHz</div>
-            <div>DECK REF: BLACK BOX 1980s</div>
+            <div>DECK REF: BLACK BOX ARCHIVE</div>
           </div>
         </div>
         <div>
@@ -656,8 +683,8 @@
     renderStars();
 
     /* ===== 音訊管理與雙軌持久化核心 ===== */
-    const STORAGE_KEY = "BLACKBOX_CASSETTE_DATA_V1";
-    const REMOTE_JSON_URL = "./cassette_tape_data.json"; // 雲端同目錄下的 JSON 檔案名稱
+    const STORAGE_KEY = "CHRONO_DECK_1985_DATA";
+    const REMOTE_JSON_URL = "./chrono_deck_1985_data.json";
 
     let isEditing = false;
     let isShuffle = false;
@@ -665,7 +692,6 @@
     let currentTrackIndex = 0;
     let eqInterval = null;
 
-    // 預設清單（若本機與雲端都沒有資料時啟動）
     let defaultMusicList = [
       {
         id: 1788443714852,
@@ -710,7 +736,6 @@
 
     audio.volume = 0.8;
 
-    // 自動持久化：寫入 localStorage
     function saveToStorage() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(musicList));
@@ -719,7 +744,6 @@
       }
     }
 
-    // 雙軌載入程序
     async function init() {
       const localData = localStorage.getItem(STORAGE_KEY);
       
@@ -730,7 +754,6 @@
           musicList = defaultMusicList;
         }
       } else {
-        // 本機無快照，嘗試自伺服器抓取 JSON
         try {
           const resp = await fetch(REMOTE_JSON_URL);
           if (resp.ok) {
@@ -847,7 +870,7 @@
       document.getElementById('lbTitle').innerText = item.title;
       document.getElementById('lbArtist').innerText = item.artist;
       document.getElementById('lbNotes').innerText = item.notes || "（暫無歌詞與筆記內容）";
-      document.getElementById('lbTag').innerText = `CASSETTE ARCHIVE // [0${index + 1}]`;
+      document.getElementById('lbTag').innerText = `CHRONO DECK 1985 // [TRACK 0${index + 1}]`;
       document.getElementById('lightboxBackdrop').classList.add('active');
     }
 
@@ -994,16 +1017,14 @@
       renderCards();
     }
 
-    // 打包匯出 JSON 檔案
     document.getElementById('exportBtn').onclick = () => {
       const blob = new Blob([JSON.stringify(musicList, null, 2)], {type: "application/json"});
       const a = document.createElement('a');
       a.href = URL.createObjectURL(blob);
-      a.download = "cassette_tape_data.json";
+      a.download = "chrono_deck_1985_data.json";
       a.click();
     };
 
-    // 匯入 JSON 並立即寫入瀏覽器本地快照
     document.getElementById('importFile').onchange = (e) => {
       const file = e.target.files[0];
       if (!file) return;
@@ -1011,12 +1032,12 @@
       reader.onload = (evt) => {
         try {
           musicList = JSON.parse(evt.target.result);
-          saveToStorage(); // 立即永久保存
+          saveToStorage();
           currentFilter = 'ALL';
           renderFilters();
           renderSelector();
           renderCards();
-          alert("資料庫已成功載入並同步至瀏覽器快取！");
+          alert("CHRONO DECK 資料庫載入成功，已永久記錄至瀏覽器！");
         } catch(err) { alert("JSON 格式錯誤"); }
       };
       reader.readAsText(file);
