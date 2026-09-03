@@ -4,9 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Soros — Personal Archive</title>
+  <!-- Google Fonts: Patrick Hand SC, Caveat, Space Grotesk, Newsreader -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand+SC&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Patrick+Hand+SC&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
   
   <style>
     :root {
@@ -43,6 +44,7 @@
         linear-gradient(180deg, #07090e 0%, #0c101c 45%, #05070c 100%);
     }
 
+    /* 動態星空背景畫布 */
     #star-canvas {
       position: fixed;
       top: 0;
@@ -53,6 +55,7 @@
       pointer-events: none;
     }
 
+    /* 紙張主體容器（浮於星空之上） */
     .sheet-container {
       position: relative;
       z-index: 1;
@@ -70,12 +73,13 @@
       backdrop-filter: blur(8px);
     }
 
+    /* 頂部中繼欄 */
     .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding-bottom: 1.2rem;
-      margin-bottom: 3rem;
+      margin-bottom: 2.8rem;
       border-bottom: 1px solid var(--border-subtle);
     }
 
@@ -98,12 +102,13 @@
       background: rgba(255, 255, 255, 0.4);
     }
 
+    /* 個人核心資訊區塊 */
     .hero-section {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
       gap: 3.5rem;
-      margin-bottom: 3.5rem;
+      margin-bottom: 3.2rem;
     }
 
     .hero-content {
@@ -117,7 +122,7 @@
       line-height: 0.95;
       color: var(--text-main);
       text-transform: uppercase;
-      margin-bottom: 1.2rem;
+      margin-bottom: 1.1rem;
       display: flex;
       align-items: baseline;
       gap: 0.85rem;
@@ -129,13 +134,16 @@
       font-size: 4.8rem;
     }
 
+    /* 手寫隨筆感字型 (Caveat) */
     .hero-bio {
-      font-family: 'Newsreader', Georgia, serif;
-      font-size: 1.15rem;
-      line-height: 1.75;
-      color: var(--text-muted);
-      max-width: 600px;
+      font-family: 'Caveat', cursive;
+      font-size: 1.55rem;
+      line-height: 1.55;
+      color: #3d3b36;
+      max-width: 610px;
       margin-bottom: 2rem;
+      font-weight: 500;
+      letter-spacing: 0.015em;
     }
 
     .tags-row {
@@ -156,6 +164,7 @@
       text-transform: uppercase;
     }
 
+    /* 右側正方形圓角頭像區塊 */
     .avatar-wrapper {
       position: relative;
       flex-shrink: 0;
@@ -178,7 +187,7 @@
       height: 100%;
       border-radius: 11px;
       object-fit: cover;
-      object-position: 65% 18%;
+      object-position: 65% 18%; /* 聚焦人物面部 */
       filter: grayscale(100%) contrast(105%);
       transition: filter 0.35s ease, transform 0.35s ease;
       display: block;
@@ -203,6 +212,7 @@
       padding: 0.15rem 0.45rem;
     }
 
+    /* 連結卡片區塊 */
     .links-section {
       margin-top: auto;
     }
@@ -291,6 +301,7 @@
       font-weight: 600;
     }
 
+    /* 響應式排版 (RWD) */
     @media (max-width: 900px) {
       .cards-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -318,23 +329,30 @@
       .hand-headline {
         font-size: 3rem;
       }
+      .hero-bio {
+        font-size: 1.35rem;
+      }
     }
   </style>
 </head>
 <body>
 
+  <!-- 動態星空畫布 -->
   <canvas id="star-canvas"></canvas>
 
   <main class="sheet-container">
+    <!-- 頂部規格列 -->
     <header class="top-bar">
       <div class="top-meta">ARCHIVE // V1.0.0 · 2026.09</div>
       <div class="status-badge">OBSERVER LOG</div>
     </header>
 
+    <!-- 個人核心簡介與頭像 -->
     <section class="hero-section">
       <div class="hero-content">
         <h1 class="hand-headline">SOROS<span class="accent-mark">.</span></h1>
         
+        <!-- 手寫隨筆風格簡介 (Caveat) -->
         <p class="hero-bio">
           Driven by boundless curiosity for the unknown and inexplicable. Exploring the intersections of classical literature, philosophical discourse, and analytical detective logic—while documenting gameplay and cognitive journeys across digital realms. A quiet observatory for deconstructing truth and uncharted mysteries.
         </p>
@@ -347,6 +365,7 @@
         </div>
       </div>
 
+      <!-- 右側正方形圓角頭像 -->
       <div class="avatar-wrapper">
         <div class="avatar-frame">
           <img src="unnamed.jpg" alt="Soros Portrait" class="avatar-img" onerror="this.src='avatar.jpg'">
@@ -355,6 +374,7 @@
       </div>
     </section>
 
+    <!-- 底部功能卡片區塊 -->
     <section class="links-section">
       <div class="section-header">
         <span class="section-number">01</span>
@@ -401,6 +421,7 @@
     </section>
   </main>
 
+  <!-- 星空微動態腳本 -->
   <script>
     (function () {
       const canvas = document.getElementById('star-canvas');
