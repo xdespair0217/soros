@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>CASSETTE DECK SYSTEM</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,9 +12,8 @@
   <style>
     :root {
       --bg-dark: #000000;
-      --panel-bg: #14171d;
-      --card-bg: rgba(22, 24, 30, 0.92);
-      --card-border: #2e3340;
+      --card-bg: rgba(22, 25, 32, 0.94);
+      --card-border: #2b313d;
       --tape-sticker: #ded7be;
       --amber: #ffb800;
       --cyan: #38bdf8;
@@ -32,18 +31,19 @@
       padding: 0; 
       font-family: var(--font-jp); 
       -webkit-font-smoothing: antialiased; 
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
       background-color: var(--bg-dark);
       color: var(--text-light);
       min-height: 100vh;
-      padding: 30px 24px 80px;
+      padding: 24px 20px 80px;
       overflow-x: hidden;
       position: relative;
     }
 
-    /* 星空 Canvas 背景 */
+    /* Space Trip 橫移星空背景 */
     #starfield {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -51,58 +51,70 @@
       pointer-events: none;
     }
 
-    /* 網頁版核心舞台（鎖定 1180px 寬螢幕舒適居中） */
     .stage-container {
       position: relative;
       z-index: 10;
-      max-width: 1180px;
+      max-width: 1200px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      gap: 18px;
     }
 
-    /* ===== 電腦網頁版專屬：黃金比例長條儀表艙 ===== */
-    .deck-console {
+    /* ===== 機架主控台 ===== */
+    .master-rack-deck {
       width: 100%;
-      max-width: 820px;
-      background: linear-gradient(180deg, #181c24 0%, #101217 100%);
-      border: 1px solid #2d3545;
-      border-top: 1px solid #4a576d;
+      background: linear-gradient(180deg, #1b202a 0%, #101217 100%);
+      border: 1px solid #333d4e;
+      border-top: 2px solid #4f5d75;
       border-radius: 8px;
-      padding: 8px 18px;
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      padding: 10px 18px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.95);
       display: flex;
       align-items: center;
-      gap: 12px;
-      margin-bottom: 24px;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
     }
 
-    /* 下拉選單 */
+    .rack-bolt {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #0d0f12;
+      border: 1px solid #3d4656;
+      position: relative;
+    }
+    .rack-bolt::after {
+      content: ""; position: absolute; top: 4px; left: 1px; width: 6px; height: 1px; background: #55627a;
+    }
+
+    .deck-core-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
     .deck-select {
-      background: #0a0c10;
-      border: 1px solid #252c3a;
+      background: #0c0e12;
+      border: 1px solid #283140;
       color: var(--amber);
       font-family: var(--font-tech);
       font-weight: 600;
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       padding: 6px 12px;
       border-radius: 4px;
       outline: none;
       cursor: pointer;
-      width: 200px;
+      min-width: 180px;
       letter-spacing: 0.05em;
     }
 
-    /* 播放、停止、隨機微按鍵 */
-    .deck-keys {
-      display: flex;
-      gap: 5px;
-    }
+    .deck-keys { display: flex; gap: 6px; }
+
     .ctrl-btn {
-      width: 30px;
-      height: 30px;
-      background: linear-gradient(180deg, #2b3342 0%, #1a202c 100%);
+      width: 32px; height: 32px;
+      background: linear-gradient(180deg, #2f3747 0%, #1a202c 100%);
       border: 1px solid #141720;
       border-top: 1px solid #4a566d;
       color: #e5e7eb;
@@ -111,67 +123,78 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       font-family: var(--font-tech);
       font-weight: 700;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
-      transition: all 0.15s ease;
       user-select: none;
     }
-    .ctrl-btn:hover { background: #353f52; color: #fff; }
     .ctrl-btn:active { transform: translateY(1px); }
     .ctrl-btn.active {
       background: rgba(255, 184, 0, 0.15);
       border-color: var(--amber);
       color: var(--amber);
-      box-shadow: 0 0 6px rgba(255, 184, 0, 0.4);
+      box-shadow: 0 0 8px rgba(255, 184, 0, 0.4);
     }
 
-    /* 琥珀液晶計時器 */
+    .deck-core-center {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1;
+      justify-content: center;
+    }
+
     .lcd-display {
       font-family: var(--font-lcd);
       color: var(--amber);
-      font-size: 1.65rem;
+      font-size: 1.85rem;
       letter-spacing: 2px;
       line-height: 1;
-      min-width: 65px;
+      min-width: 70px;
       text-align: center;
-      text-shadow: 0 0 8px rgba(255, 184, 0, 0.4);
-      background: #090b0e;
+      text-shadow: 0 0 10px rgba(255, 184, 0, 0.4);
+      background: #080a0d;
       padding: 3px 6px;
-      border-radius: 3px;
-      border: 1px solid #1f1b0a;
+      border-radius: 4px;
+      border: 1px solid #231f0e;
     }
 
-    /* 頻譜跳動柱 */
     .eq-spectrum {
       display: flex;
       align-items: flex-end;
       gap: 3px;
-      height: 20px;
-      padding: 0 4px;
+      height: 22px;
+      padding: 0 5px;
+      background: #090a0d;
+      border: 1px solid #1f2530;
+      border-radius: 3px;
     }
     .eq-col {
-      width: 3px;
-      height: 4px;
-      border-radius: 1px;
+      width: 4px; height: 4px; border-radius: 1px;
       transition: height 0.08s ease;
     }
-    .eq-col.cyan { background-color: var(--cyan); box-shadow: 0 0 4px rgba(56, 189, 248, 0.5); }
-    .eq-col.amber { background-color: var(--amber); box-shadow: 0 0 4px rgba(255, 184, 0, 0.5); }
+    .eq-col.cyan { background-color: var(--cyan); box-shadow: 0 0 5px rgba(56, 189, 248, 0.5); }
+    .eq-col.amber { background-color: var(--amber); box-shadow: 0 0 5px rgba(255, 184, 0, 0.5); }
 
-    /* 曲目標註槽 */
+    .deck-core-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1;
+      justify-content: flex-end;
+    }
+
     .track-subtitle-box {
       flex: 1;
-      min-width: 140px;
       position: relative;
-      padding-bottom: 2px;
+      padding-bottom: 3px;
+      overflow: hidden;
     }
     .track-subtitle {
       font-family: var(--font-jp);
       font-size: 0.82rem;
       font-weight: 500;
-      color: #9bb0c8;
+      color: #9cb3cc;
       letter-spacing: 0.06em;
       white-space: nowrap;
       overflow: hidden;
@@ -180,48 +203,40 @@
     }
     .track-subtitle-box::after {
       content: "";
-      position: absolute;
-      left: 0; bottom: 0; width: 100%; height: 1px;
-      background: #252c38;
+      position: absolute; left: 0; bottom: 0; width: 100%; height: 1px;
+      background: linear-gradient(90deg, #333d4d 0%, #1e242e 90%, transparent 100%);
     }
 
-    /* 音量控制器 */
     .volume-ctrl-box {
       display: flex;
       align-items: center;
       gap: 6px;
-      background: #0d1015;
+      background: #0a0c10;
       padding: 3px 8px;
       border-radius: 4px;
-      border: 1px solid #1f2530;
+      border: 1px solid #202633;
     }
+    .vol-icon { font-size: 0.7rem; color: #737c8e; font-family: var(--font-tech); }
     .vol-slider {
       -webkit-appearance: none;
-      width: 55px;
-      height: 3px;
-      background: #252b36;
-      border-radius: 2px;
-      outline: none;
-      cursor: pointer;
+      width: 65px; height: 3px;
+      background: #252b36; border-radius: 2px; outline: none;
     }
     .vol-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--amber);
-      cursor: pointer;
+      -webkit-appearance: none; width: 8px; height: 8px; border-radius: 50%; background: var(--amber);
     }
 
-    /* ===== 整合式導覽與控制條（Navigation Strip） ===== */
-    .control-strip {
+    /* ===== 次級副面板 ===== */
+    .sub-control-panel {
       width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 12px;
-      margin-bottom: 24px;
-      border-bottom: 1px solid var(--card-border);
-      gap: 16px;
+      padding: 6px 14px;
+      background: rgba(14, 16, 21, 0.75);
+      border: 1px solid #222733;
+      border-radius: 5px;
+      gap: 12px;
       flex-wrap: wrap;
     }
 
@@ -229,7 +244,9 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      flex-wrap: wrap;
+      overflow-x: auto;
+      white-space: nowrap;
+      padding-bottom: 2px;
     }
     .filter-label {
       font-family: var(--font-tech);
@@ -239,16 +256,14 @@
       letter-spacing: 0.1em;
     }
     .filter-btn {
-      background: rgba(22, 24, 30, 0.85);
-      border: 1px solid #282d38;
+      background: rgba(22, 25, 33, 0.9);
+      border: 1px solid #2d3340;
       color: #8c93a4;
       padding: 4px 12px;
       font-size: 0.8rem;
       border-radius: 3px;
       cursor: pointer;
-      transition: all 0.15s ease;
     }
-    .filter-btn:hover { color: #fff; border-color: #555; }
     .filter-btn.active {
       background: rgba(255, 184, 0, 0.15);
       border-color: var(--amber);
@@ -257,28 +272,24 @@
     }
 
     .admin-group button {
-      background: #191c22;
+      background: #181b22;
       color: #c4c9d4;
-      border: 1px solid var(--card-border);
-      padding: 5px 12px;
-      margin-left: 6px;
+      border: 1px solid #2c3240;
+      padding: 4px 10px;
+      margin-left: 5px;
       cursor: pointer;
       font-family: var(--font-tech);
       font-size: 0.75rem;
-      letter-spacing: 0.08em;
       border-radius: 3px;
-      box-shadow: 2px 2px 0px #000;
-      transition: all 0.15s ease;
     }
-    .admin-group button:hover { color: #ffffff; border-color: #555; }
     .admin-group button.active { background: #ff5533; color: #0c0e12; font-weight: 700; }
 
-    /* ===== 卡帶展示網格（寬螢幕自適應） ===== */
+    /* ===== 卡帶網格展示區 ===== */
     .cassette-grid {
       width: 100%;
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 24px;
+      gap: 22px;
     }
 
     .cassette-card {
@@ -286,21 +297,15 @@
       backdrop-filter: blur(8px);
       border: 2px solid var(--card-border);
       border-radius: 8px;
-      padding: 14px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05);
+      padding: 12px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.8);
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-    }
-    .cassette-card:hover {
-      transform: translateY(-4px);
-      border-color: #434c5e;
-      box-shadow: 0 12px 28px rgba(0,0,0,0.85);
+      gap: 10px;
+      transition: transform 0.2s ease;
     }
     .cassette-card.is-hidden { display: none; }
 
-    /* 貼紙標籤 */
     .label-sticker {
       background: var(--tape-sticker);
       color: #1a1a1a;
@@ -313,94 +318,61 @@
     }
     .card-title {
       font-weight: 700;
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       letter-spacing: 0.06em;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .card-artist {
-      font-size: 0.75rem;
-      font-weight: 500;
-      letter-spacing: 0.05em;
-      opacity: 0.85;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 0.74rem; font-weight: 500; opacity: 0.85;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
 
-    /* 封面圖片視窗 */
     .tape-window {
       position: relative;
       height: 140px;
       background: #08080a;
-      border: 1px solid #20242e;
+      border: 1px solid #1f232c;
       border-radius: 4px;
       overflow: hidden;
       cursor: pointer;
     }
-    .cover-image {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      opacity: 0.9;
-      transition: transform 0.3s ease, opacity 0.2s;
-    }
-    .tape-window:hover .cover-image {
-      transform: scale(1.04);
-      opacity: 1;
-    }
+    .cover-image { width: 100%; height: 100%; object-fit: cover; opacity: 0.92; }
 
-    /* 下方操作與旋轉齒輪視窗 */
     .card-bottom-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 8px;
     }
-    .card-actions {
-      display: flex;
-      gap: 6px;
-      flex: 1;
-    }
+    .card-actions { display: flex; gap: 6px; flex: 1; }
     .card-btn {
       flex: 1;
-      background: #141518;
-      color: #999;
-      border: 1px solid #333;
-      padding: 5px 0;
+      background: #13161c;
+      color: #aaa;
+      border: 1px solid #2d323d;
+      padding: 6px 0;
       cursor: pointer;
       font-family: var(--font-tech);
       font-size: 0.75rem;
-      letter-spacing: 0.08em;
       font-weight: 600;
       border-radius: 2px;
-      transition: color 0.15s, border-color 0.15s;
     }
-    .card-btn:hover { color: #fff; border-color: #666; }
 
     .mini-reel-window {
-      width: 54px;
-      height: 26px;
-      background: #0a0b0d;
-      border: 1px solid #222630;
+      width: 50px; height: 24px;
+      background: #090a0d;
+      border: 1px solid #1f232b;
       border-radius: 3px;
-      display: flex;
-      align-items: center;
-      justify-content: space-around;
+      display: flex; align-items: center; justify-content: space-around;
       padding: 0 4px;
     }
     .gear {
-      width: 14px;
-      height: 14px;
-      border: 2px dashed #555;
-      border-radius: 50%;
-      background: #16181c;
+      width: 13px; height: 13px;
+      border: 2px dashed #555; border-radius: 50%; background: #14161a;
     }
     .playing .gear { animation: spin 2.5s linear infinite; border-color: var(--amber); }
     @keyframes spin { 100% { transform: rotate(360deg); } }
 
-    /* 編輯面板 */
     .edit-panel {
       display: none;
       flex-direction: column;
@@ -410,21 +382,20 @@
       padding-top: 6px;
     }
     .editing .edit-panel { display: flex; }
-    .edit-panel label { font-family: var(--font-tech); font-size: 0.7rem; color: #888; }
     .edit-panel input, .edit-panel textarea {
-      background: #101114;
-      border: 1px solid #444;
+      background: #0e1014;
+      border: 1px solid #333d4e;
       color: #eee;
       padding: 4px;
       font-size: 0.75rem;
     }
 
-    /* 燈箱背景與本體 */
+    /* 燈箱 Modal */
     .lightbox-backdrop {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(12px);
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(14px);
       z-index: 10000;
       display: flex;
       align-items: center;
@@ -432,26 +403,27 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.25s ease;
+      padding: 16px;
     }
     .lightbox-backdrop.active { opacity: 1; pointer-events: auto; }
 
     .lightbox-modal {
-      width: 90%;
+      width: 100%;
       max-width: 680px;
       background: #14171d;
       border: 2px solid #323846;
       border-radius: 8px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95);
       overflow: hidden;
-      transform: scale(0.9);
-      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: scale(0.92);
+      transition: transform 0.25s ease;
       display: flex;
       flex-direction: column;
+      max-height: 85vh;
     }
     .lightbox-backdrop.active .lightbox-modal { transform: scale(1); }
 
     .lightbox-header {
-      height: 36px;
+      height: 40px;
       background: #1a1e27;
       border-bottom: 1px solid #2c3240;
       display: flex;
@@ -459,28 +431,14 @@
       justify-content: space-between;
       padding: 0 16px;
     }
-    .lightbox-tag {
-      font-family: var(--font-tech);
-      font-size: 0.75rem;
-      color: var(--amber);
-      font-weight: 700;
-      letter-spacing: 0.1em;
-    }
-    .lightbox-close {
-      background: transparent;
-      border: none;
-      color: #888;
-      font-size: 1.1rem;
-      cursor: pointer;
-    }
-    .lightbox-close:hover { color: #fff; }
+    .lightbox-tag { font-family: var(--font-tech); font-size: 0.75rem; color: var(--amber); font-weight: 700; }
+    .lightbox-close { background: transparent; border: none; color: #aaa; font-size: 1.2rem; cursor: pointer; }
 
     .lightbox-body {
       display: grid;
-      grid-template-columns: 280px 1fr;
+      grid-template-columns: 260px 1fr;
       gap: 20px;
-      padding: 24px;
-      max-height: 75vh;
+      padding: 20px;
       overflow-y: auto;
     }
     .lightbox-cover {
@@ -500,7 +458,7 @@
       margin-top: 10px;
     }
     .lightbox-title { font-size: 1.25rem; font-weight: 700; color: #fff; }
-    .lightbox-artist { font-size: 0.9rem; color: var(--amber); margin-top: 3px; }
+    .lightbox-artist { font-size: 0.88rem; color: var(--amber); margin-top: 4px; }
     .lightbox-notes-content {
       font-size: 0.85rem;
       line-height: 1.8;
@@ -511,8 +469,67 @@
       border-radius: 4px;
       border: 1px solid #1e222b;
       margin-top: 12px;
-      max-height: 220px;
+      max-height: 240px;
       overflow-y: auto;
+    }
+
+    /* ===== 手機端專屬適配（全面關閉管理、極致純粹） ===== */
+    @media (max-width: 768px) {
+      body { padding: 14px 12px 60px; }
+      
+      /* 1. 手機端徹底隱藏所有編輯與管理按鍵 */
+      .admin-group, .edit-panel {
+        display: none !important;
+      }
+      .rack-bolt { display: none; }
+
+      /* 2. 主機架轉化為輕巧雙層控制艙 */
+      .master-rack-deck {
+        padding: 10px 12px;
+        gap: 10px;
+      }
+      .deck-core-left {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .deck-select {
+        flex: 1;
+        min-width: 0;
+        font-size: 0.82rem;
+      }
+      .deck-core-center {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .deck-core-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .volume-ctrl-box {
+        display: none; /* 手機端直接利用硬體音量鍵即可，騰出視覺空間 */
+      }
+      .track-subtitle-box {
+        width: 100%;
+      }
+
+      /* 3. 卡帶網格單排兩列流式自適應 */
+      .cassette-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 14px;
+      }
+      .tape-window { height: 110px; }
+      .mini-reel-window { display: none; } /* 手機端卡片隱藏小視窗，留給按鍵完整寬度 */
+      .card-title { font-size: 0.82rem; }
+      .card-artist { font-size: 0.7rem; }
+
+      /* 4. 燈箱改為單欄縱向展開 */
+      .lightbox-body {
+        grid-template-columns: 1fr;
+        padding: 16px;
+        gap: 14px;
+      }
+      .lightbox-cover { height: 180px; }
+      .lightbox-meta-box { display: none; }
     }
   </style>
 </head>
@@ -521,45 +538,57 @@
   <canvas id="starfield"></canvas>
 
   <div class="stage-container">
-    <!-- 頂部居中控制艙 -->
-    <header class="deck-console">
-      <select class="deck-select" id="trackSelect" onchange="selectTrack(this.value)">
-        <option value="" disabled selected>-- 選擇曲目 --</option>
-      </select>
+    <!-- 主機架控制艙 -->
+    <header class="master-rack-deck">
+      <div class="rack-bolt"></div>
 
-      <div class="deck-keys">
-        <button class="ctrl-btn" id="playBtn" onclick="togglePlay()" title="播放/暫停">❚❚</button>
-        <button class="ctrl-btn" onclick="stopMusic()" title="停止">■</button>
-        <button class="ctrl-btn" id="shuffleBtn" onclick="toggleShuffle()" title="隨機播放">🔀</button>
+      <div class="deck-core-left">
+        <select class="deck-select" id="trackSelect" onchange="selectTrack(this.value)">
+          <option value="" disabled selected>-- 選擇曲目 --</option>
+        </select>
+
+        <div class="deck-keys">
+          <button class="ctrl-btn" id="playBtn" onclick="togglePlay()" title="播放/暫停">❚❚</button>
+          <button class="ctrl-btn" onclick="stopMusic()" title="停止">■</button>
+          <button class="ctrl-btn" id="shuffleBtn" onclick="toggleShuffle()" title="隨機播放">🔀</button>
+        </div>
       </div>
 
-      <div class="lcd-display" id="lcdTimer">00:00</div>
+      <div class="deck-core-center">
+        <div class="lcd-display" id="lcdTimer">00:00</div>
 
-      <div class="eq-spectrum" id="eqSpectrum">
-        <div class="eq-col cyan" style="height: 14px;"></div>
-        <div class="eq-col cyan" style="height: 8px;"></div>
-        <div class="eq-col cyan" style="height: 18px;"></div>
-        <div class="eq-col cyan" style="height: 10px;"></div>
-        <div class="eq-col cyan" style="height: 16px;"></div>
-        <div class="eq-col cyan" style="height: 12px;"></div>
-        <div class="eq-col amber" style="height: 14px;"></div>
-        <div class="eq-col amber" style="height: 6px;"></div>
-        <div class="eq-col amber" style="height: 16px;"></div>
-        <div class="eq-col amber" style="height: 10px;"></div>
+        <div class="eq-spectrum" id="eqSpectrum">
+          <div class="eq-col cyan" style="height: 14px;"></div>
+          <div class="eq-col cyan" style="height: 8px;"></div>
+          <div class="eq-col cyan" style="height: 18px;"></div>
+          <div class="eq-col cyan" style="height: 10px;"></div>
+          <div class="eq-col cyan" style="height: 16px;"></div>
+          <div class="eq-col cyan" style="height: 12px;"></div>
+          <div class="eq-col cyan" style="height: 20px;"></div>
+          <div class="eq-col cyan" style="height: 14px;"></div>
+          <div class="eq-col amber" style="height: 18px;"></div>
+          <div class="eq-col amber" style="height: 12px;"></div>
+          <div class="eq-col amber" style="height: 6px;"></div>
+          <div class="eq-col amber" style="height: 16px;"></div>
+        </div>
       </div>
 
-      <div class="track-subtitle-box">
-        <span class="track-subtitle" id="trackSubtitle">負けないで (ZARD / 坂井泉水)</span>
+      <div class="deck-core-right">
+        <div class="track-subtitle-box">
+          <span class="track-subtitle" id="trackSubtitle">負けないで (ZARD / 坂井泉水)</span>
+        </div>
+
+        <div class="volume-ctrl-box">
+          <span class="vol-icon">VOL</span>
+          <input type="range" class="vol-slider" id="volSlider" min="0" max="100" value="80" oninput="changeVolume(this.value)">
+        </div>
       </div>
 
-      <div class="volume-ctrl-box">
-        <span style="font-size:0.7rem; color:#737c8e;">VOL</span>
-        <input type="range" class="vol-slider" id="volSlider" min="0" max="100" value="80" oninput="changeVolume(this.value)">
-      </div>
+      <div class="rack-bolt"></div>
     </header>
 
-    <!-- 次頂部：分類標籤與功能工具條一體化 -->
-    <div class="control-strip">
+    <!-- 分類與管理欄（手機端自動隱藏管理鈕） -->
+    <div class="sub-control-panel">
       <div class="filter-group" id="filterBar">
         <span class="filter-label">ARTIST:</span>
         <button class="filter-btn active" onclick="setFilter('ALL')">ALL 全部</button>
@@ -577,7 +606,7 @@
     <main class="cassette-grid" id="gridContainer"></main>
   </div>
 
-  <!-- Zooming 燈箱 -->
+  <!-- Zooming 燈箱（手機點擊即開） -->
   <div class="lightbox-backdrop" id="lightboxBackdrop" onclick="closeLightbox(event)">
     <div class="lightbox-modal">
       <div class="lightbox-header">
@@ -629,12 +658,12 @@
         color: starPalette[Math.floor(Math.random() * starPalette.length)]
       });
     }
-    for (let i = 0; i < 20; i++) {
+    for (let i = 0; i < 18; i++) {
       stars.push({
         x: Math.random() * width,
         y: Math.random() * height,
         size: 2,
-        speed: Math.random() * 3 + 1.2,
+        speed: Math.random() * 2.8 + 1.2,
         color: starPalette[Math.floor(Math.random() * starPalette.length)]
       });
     }
@@ -651,7 +680,7 @@
     }
     renderStars();
 
-    /* 音訊與資料邏輯 */
+    /* 核心邏輯 */
     let isEditing = false;
     let isShuffle = false;
     let currentFilter = 'ALL';
@@ -685,24 +714,6 @@
         audioUrl: "",
         coverUrl: "https://picsum.photos/600/400?grayscale&random=95",
         notes: "きっと忘れない 眩しい笑顔で\nWash away, 洗い流して\n遠く離れても 心はいつも\nあなたのそばにいるから..."
-      },
-      {
-        id: 2,
-        title: "01. 宿醉.mp3",
-        artist: "路西法側寫",
-        subtitle: "宿醉.mp3 (黑盒子沉浸配樂)",
-        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-        coverUrl: "https://picsum.photos/600/400?random=1",
-        notes: "清晨五點多，天色從墨藍轉為一抹清冷的灰白。\n路西法在破曉的動態前進..."
-      },
-      {
-        id: 3,
-        title: "Plastic Love",
-        artist: "竹内まりや",
-        subtitle: "Plastic Love (竹内まりや)",
-        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-        coverUrl: "https://picsum.photos/600/400?random=2",
-        notes: "City Pop 經典代表作。\n突然のキスや 熱いまなざしで 恋のプログラムを狂わせないで..."
       }
     ];
 
@@ -789,11 +800,11 @@
             <input type="text" value="${item.title}" onchange="musicList[${index}].title=this.value; renderSelector(); renderCards();">
             <label>歌手分類：</label>
             <input type="text" value="${item.artist}" onchange="musicList[${index}].artist=this.value; renderFilters(); renderSelector(); renderCards();">
-            <label>頂部標註文字：</label>
+            <label>標註：</label>
             <input type="text" value="${item.subtitle || ''}" onchange="musicList[${index}].subtitle=this.value;">
             <label>MP3 網址：</label>
             <input type="text" value="${item.audioUrl}" onchange="musicList[${index}].audioUrl=this.value;">
-            <label>筆記 / 歌詞：</label>
+            <label>筆記：</label>
             <textarea rows="2" onchange="musicList[${index}].notes=this.value;">${item.notes || ''}</textarea>
           </div>
         `;
@@ -802,7 +813,8 @@
     }
 
     function handleCoverClick(index) {
-      if (isEditing) {
+      // 電腦端開啟編輯模式時換圖；非編輯狀態或手機端點擊直接彈出精美燈箱
+      if (isEditing && window.innerWidth > 768) {
         document.querySelector(`.file-input-${index}`).click();
       } else {
         openLightbox(index);
@@ -814,8 +826,8 @@
       document.getElementById('lbCover').src = item.coverUrl;
       document.getElementById('lbTitle').innerText = item.title;
       document.getElementById('lbArtist').innerText = item.artist;
-      document.getElementById('lbNotes').innerText = item.notes || "（暫無歌詞與筆記記錄）";
-      document.getElementById('lbTag').innerText = `CASSETTE ARCHIVE // [TRACK 0${index + 1}]`;
+      document.getElementById('lbNotes').innerText = item.notes || "（暫無歌詞與筆記內容）";
+      document.getElementById('lbTag').innerText = `CASSETTE ARCHIVE // [0${index + 1}]`;
       document.getElementById('lightboxBackdrop').classList.add('active');
     }
 
@@ -831,7 +843,7 @@
     function playIndex(index) {
       currentTrackIndex = index;
       const item = musicList[index];
-      if (!item.audioUrl) return alert("請先填寫此曲目的 MP3 音訊網址！");
+      if (!item.audioUrl) return alert("請輸入此曲目的 MP3 音訊網址！");
 
       document.querySelectorAll('.cassette-card').forEach(c => c.classList.remove('playing'));
       if (gridContainer.children[index]) gridContainer.children[index].classList.add('playing');
@@ -907,7 +919,7 @@
       if (eqInterval) clearInterval(eqInterval);
       eqInterval = setInterval(() => {
         eqCols.forEach(col => {
-          const randHeight = Math.floor(Math.random() * 16) + 4;
+          const randHeight = Math.floor(Math.random() * 18) + 4;
           col.style.height = `${randHeight}px`;
         });
       }, 90);
