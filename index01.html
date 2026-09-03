@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CASSETTE DECK SYSTEM - SPACE TRIP</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=M+PLUS+1p:wght@400;500;700&family=VT323&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-dark: #000000;
+      --cassette-bg: rgba(26, 28, 34, 0.92);
+      --cassette-border: #323640;
+      --tape-sticker: #ded7be;
+      --amber: #ffb800;
+      --cyan: #38bdf8;
+      --text-dim: #737c8e;
+      --text-light: #e2e6ee;
+      
+      --font-jp: "Zen Kaku Gothic New", "M PLUS 1p", "Tahoma", sans-serif;
+      --font-tech: "Chakra Petch", "Zen Kaku Gothic New", sans-serif;
+      --font-lcd: "VT323", monospace;
+    }
+
+    * { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+      font-family: var(--font-jp); 
+      -webkit-font-smoothing: antialiased; 
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-light);
+      min-height: 100vh;
+      padding: 24px 24px 80px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* --- Space Trip 星空畫布 --- */
+    #starfield {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .main-wrap {
+      position: relative;
+      z-index: 10;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* ===== 最頂部：加長旗艦儀表艙播放器 ===== */
+    .top-player-wrapper {
+      margin-bottom: 24px;
+      width: 100%;
+    }
+
+    .player-cockpit {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: linear-gradient(180deg, rgba(22, 26, 34, 0.95) 0%, rgba(13, 15, 20, 0.98) 100%);
+      backdrop-filter: blur(8px);
+      border: 1px solid #28303d;
+      border-top: 1px solid #3d495c;
+      border-radius: 6px;
+      padding: 8px 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.9), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      width: 100%;
+      flex-wrap: wrap;
+    }
+
+    .deck-select {
+      background: #101319;
+      border: 1px solid #232a36;
+      color: var(--amber);
+      font-family: var(--font-tech);
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 5px 10px;
+      border-radius: 4px;
+      outline: none;
+      cursor: pointer;
+      min-width: 180px;
+      letter-spacing: 0.05em;
+    }
+
+    .deck-btn-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ctrl-btn {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(180deg, #2b3342 0%, #1a202c 100%);
+      border: 1px solid #141720;
+      border-top: 1px solid #4a566d;
+      color: #e5e7eb;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.75rem;
+      font-family: var(--font-tech);
+      font-weight: 700;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .ctrl-btn:hover { background: #353f52; color: #fff; }
+    .ctrl-btn:active { transform: translateY(1px); box-shadow: inset 0 1px 3px #000; }
+    .ctrl-btn.active {
+      background: rgba(255, 184, 0, 0.15);
+      border-color: var(--amber);
+      color: var(--amber);
+      box-shadow: 0 0 6px rgba(255, 184, 0, 0.4);
+    }
+
+    .lcd-display {
+      font-family: var(--font-lcd);
+      color: var(--amber);
+      font-size: 1.65rem;
+      letter-spacing: 2px;
+      line-height: 1;
+      min-width: 65px;
+      text-align: center;
+      text-shadow: 0 0 8px rgba(255, 184, 0, 0.4);
+      background: #090b0e;
+      padding: 3px 6px;
+      border-radius: 3px;
+      border: 1px solid #1f1b0a;
+    }
+
+    .eq-spectrum {
+      display: flex;
+      align-items: flex-end;
+      gap: 3px;
+      height: 20px;
+      padding: 0 4px;
+    }
+    .eq-col {
+      width: 3px;
+      height: 4px;
+      border-radius: 1px;
+      transition: height 0.08s ease;
+    }
+    .eq-col.cyan { background-color: var(--cyan); box-shadow: 0 0 4px rgba(56, 189, 248, 0.5); }
+    .eq-col.amber { background-color: var(--amber); box-shadow: 0 0 4px rgba(255, 184, 0, 0.5); }
+
+    .track-subtitle-box {
+      flex: 1;
+      min-width: 160px;
+      position: relative;
+      padding-bottom: 3px;
+    }
+    .track-subtitle {
+      font-family: var(--font-jp);
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: #9bb0c8;
+      letter-spacing: 0.06em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: block;
+    }
+    .track-subtitle-box::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      height: 1px;
+      background: linear-gradient(90deg, #333d4d 0%, #1e242e 80%, transparent 100%);
+    }
+
+    .volume-ctrl-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #0d1015;
+      padding: 4px 10px;
+      border-radius: 4px;
+      border: 1px solid #1f2530;
+    }
+    .vol-icon { font-size: 0.72rem; color: #737c8e; user-select: none; }
+    .vol-slider {
+      -webkit-appearance: none;
+      width: 65px;
+      height: 3px;
+      background: #252b36;
+      border-radius: 2px;
+      outline: none;
+      cursor: pointer;
+    }
+    .vol-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--amber);
+      cursor: pointer;
+      box-shadow: 0 0 4px rgba(255, 184, 0, 0.6);
+    }
+
+    /* ===== 系統標題列 ===== */
+    .deck-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 14px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--cassette-border);
+    }
+    .deck-title { 
+      font-family: var(--font-tech);
+      font-size: 1.05rem; 
+      color: #ff5533; 
+      letter-spacing: 0.18em; 
+      font-weight: 700;
+    }
+    .btn-group button {
+      background: #1b1d24;
+      color: #c4c9d4;
+      border: 1px solid var(--cassette-border);
+      padding: 6px 14px;
+      margin-left: 6px;
+      cursor: pointer;
+      font-family: var(--font-tech);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      box-shadow: 2px 2px 0px #000;
+      transition: all 0.15s ease;
+    }
+    .btn-group button:hover { color: #ffffff; border-color: #555d6e; }
+    .btn-group button.active { background: #ff5533; color: #0c0e12; font-weight: 700; }
+
+    /* 歌手分類 */
+    .filter-section {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 26px;
+    }
+    .filter-label { 
+      font-family: var(--font-tech);
+      font-size: 0.75rem; 
+      letter-spacing: 0.1em;
+      color: var(--text-dim); 
+      font-weight: 600;
+    }
+    .filter-btn {
+      background: rgba(22, 24, 30, 0.85);
+      border: 1px solid #2c313a;
+      color: #8c93a4;
+      padding: 4px 12px;
+      font-family: var(--font-jp);
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .filter-btn:hover { color: #fff; border-color: #555; }
+    .filter-btn.active {
+      background: rgba(255, 184, 0, 0.15);
+      border-color: var(--amber);
+      color: var(--amber);
+      font-weight: 700;
+    }
+
+    /* ===== 卡帶網格展示區 ===== */
+    .cassette-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .cassette-card {
+      background: var(--cassette-bg);
+      backdrop-filter: blur(6px);
+      border: 3px solid var(--cassette-border);
+      border-radius: 8px;
+      padding: 14px;
+      box-shadow: 0 10px 24px rgba(0,0,0,0.8), inset 1px 1px 1px rgba(255,255,255,0.06);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+    }
+    .cassette-card.is-hidden { display: none; }
+
+    /* 泛黃貼紙標籤 */
+    .label-sticker {
+      background: var(--tape-sticker);
+      color: #1a1a1a;
+      padding: 10px 12px;
+      border-radius: 4px;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .card-title { 
+      font-weight: 700; 
+      font-size: 0.95rem; 
+      letter-spacing: 0.08em; 
+      line-height: 1.3;
+      white-space: nowrap; 
+      overflow: hidden; 
+      text-overflow: ellipsis;
+    }
+    .card-artist { 
+      font-size: 0.78rem; 
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      opacity: 0.85; 
+      white-space: nowrap; 
+      overflow: hidden; 
+      text-overflow: ellipsis;
+    }
+
+    /* 完全無遮擋的封面視窗 */
+    .tape-window {
+      position: relative;
+      height: 140px;
+      background: #08080a;
+      border: 2px solid #1a1b1e;
+      border-radius: 4px;
+      overflow: hidden;
+      cursor: pointer;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.8);
+    }
+    .cover-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.9;
+      transition: transform 0.3s ease, opacity 0.2s;
+    }
+    .tape-window:hover .cover-image {
+      transform: scale(1.04);
+      opacity: 1;
+    }
+
+    /* 控制列整合：左側按鍵 + 右側微型旋轉齒輪指示窗 */
+    .card-bottom-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .card-actions {
+      display: flex;
+      gap: 6px;
+      flex: 1;
+    }
+    .card-btn {
+      flex: 1;
+      background: #141518;
+      color: #999;
+      border: 1px solid #333;
+      padding: 6px 0;
+      cursor: pointer;
+      font-family: var(--font-tech);
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      font-weight: 600;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    .card-btn:hover { color: #fff; border-color: #666; }
+
+    /* 右側微型磁帶輪視窗 (不再遮擋封面) */
+    .mini-reel-window {
+      width: 60px;
+      height: 28px;
+      background: #0a0b0d;
+      border: 1px solid #252830;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      padding: 0 4px;
+    }
+    .gear {
+      width: 16px;
+      height: 16px;
+      border: 2px dashed #555;
+      border-radius: 50%;
+      background: #16181c;
+    }
+    .playing .gear { animation: spin 2.5s linear infinite; border-color: var(--amber); }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    /* 編輯面板 */
+    .edit-panel {
+      display: none;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.75rem;
+      border-top: 1px solid #333;
+      padding-top: 8px;
+    }
+    .editing .edit-panel { display: flex; }
+    .edit-panel label { font-family: var(--font-tech); font-size: 0.72rem; color: #888; }
+    .edit-panel input, .edit-panel textarea {
+      background: #101114;
+      border: 1px solid #444;
+      color: #eee;
+      padding: 6px;
+      font-size: 0.8rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* ===== 高質感 Zooming 燈箱 (Lightbox Modal) ===== */
+    .lightbox-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(12px);
+      z-index: 10000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+    .lightbox-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .lightbox-modal {
+      width: 90%;
+      max-width: 680px;
+      background: #14171d;
+      border: 2px solid #323846;
+      border-radius: 8px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.95);
+      overflow: hidden;
+      transform: scale(0.85);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      display: flex;
+      flex-direction: column;
+    }
+    .lightbox-backdrop.active .lightbox-modal {
+      transform: scale(1);
+    }
+
+    /* 燈箱頂部金屬條 */
+    .lightbox-header {
+      height: 36px;
+      background: #1a1e27;
+      border-bottom: 1px solid #2c3240;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+    }
+    .lightbox-tag {
+      font-family: var(--font-tech);
+      font-size: 0.75rem;
+      color: var(--amber);
+      letter-spacing: 0.12em;
+      font-weight: 700;
+    }
+    .lightbox-close {
+      background: transparent;
+      border: none;
+      color: #888;
+      font-size: 1.1rem;
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.15s;
+    }
+    .lightbox-close:hover { color: #fff; }
+
+    /* 燈箱內部內容 */
+    .lightbox-body {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 20px;
+      padding: 24px;
+      max-height: 75vh;
+      overflow-y: auto;
+    }
+    @media (max-width: 640px) {
+      .lightbox-body { grid-template-columns: 1fr; }
+    }
+
+    .lightbox-cover-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .lightbox-cover {
+      width: 100%;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 4px;
+      border: 1px solid #282f3d;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.6);
+    }
+    .lightbox-meta-box {
+      font-family: var(--font-tech);
+      font-size: 0.75rem;
+      color: #737c8e;
+      line-height: 1.6;
+      border-left: 2px solid #282f3d;
+      padding-left: 10px;
+    }
+
+    .lightbox-details {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .lightbox-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.06em;
+      line-height: 1.3;
+    }
+    .lightbox-artist {
+      font-size: 0.9rem;
+      color: var(--amber);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+    .lightbox-notes-content {
+      font-size: 0.85rem;
+      line-height: 1.8;
+      color: #a8b3c4;
+      white-space: pre-wrap;
+      background: #0d0f13;
+      padding: 14px;
+      border-radius: 4px;
+      border: 1px solid #1e222b;
+      flex: 1;
+      overflow-y: auto;
+      max-height: 240px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Space Trip 橫移星空畫布 -->
+  <canvas id="starfield"></canvas>
+
+  <div class="main-wrap">
+    <!-- 最頂部：加長旗艦儀表艙播放器 -->
+    <header class="top-player-wrapper">
+      <div class="player-cockpit">
+        <select class="deck-select" id="trackSelect" onchange="selectTrack(this.value)">
+          <option value="" disabled selected>-- 選擇曲目 --</option>
+        </select>
+
+        <div class="deck-btn-group">
+          <button class="ctrl-btn" id="playBtn" onclick="togglePlay()" title="播放/暫停">❚❚</button>
+          <button class="ctrl-btn" onclick="stopMusic()" title="停止">■</button>
+          <button class="ctrl-btn" id="shuffleBtn" onclick="toggleShuffle()" title="隨機播放開關">🔀</button>
+        </div>
+
+        <div class="lcd-display" id="lcdTimer">00:00</div>
+
+        <div class="eq-spectrum" id="eqSpectrum">
+          <div class="eq-col cyan" style="height: 14px;"></div>
+          <div class="eq-col cyan" style="height: 8px;"></div>
+          <div class="eq-col cyan" style="height: 18px;"></div>
+          <div class="eq-col cyan" style="height: 10px;"></div>
+          <div class="eq-col cyan" style="height: 16px;"></div>
+          <div class="eq-col cyan" style="height: 12px;"></div>
+          <div class="eq-col amber" style="height: 14px;"></div>
+          <div class="eq-col amber" style="height: 6px;"></div>
+          <div class="eq-col amber" style="height: 16px;"></div>
+          <div class="eq-col amber" style="height: 10px;"></div>
+        </div>
+
+        <div class="track-subtitle-box">
+          <span class="track-subtitle" id="trackSubtitle">負けないで (ZARD / 坂井泉水)</span>
+        </div>
+
+        <div class="volume-ctrl-box">
+          <span class="vol-icon">VOL</span>
+          <input type="range" class="vol-slider" id="volSlider" min="0" max="100" value="80" oninput="changeVolume(this.value)">
+        </div>
+      </div>
+    </header>
+
+    <!-- 標題與操作功能列 -->
+    <div class="deck-header">
+      <div class="deck-title">CASSETTE DECK SYSTEM</div>
+      <div class="btn-group">
+        <button id="addCardBtn">+ 新增卡帶</button>
+        <button id="toggleEditBtn">編輯模式: 關</button>
+        <button id="exportBtn">打包匯出 JSON</button>
+        <button onclick="document.getElementById('importFile').click()">載入 JSON</button>
+        <input type="file" id="importFile" accept=".json" style="display:none;">
+      </div>
+    </div>
+
+    <!-- 歌手分類 -->
+    <div class="filter-section" id="filterBar">
+      <span class="filter-label">ARTIST:</span>
+      <button class="filter-btn active" onclick="setFilter('ALL')">ALL 全部</button>
+    </div>
+
+    <!-- 卡帶展示網格 -->
+    <main class="cassette-grid" id="gridContainer"></main>
+  </div>
+
+  <!-- Zooming 沉浸式燈箱彈窗 -->
+  <div class="lightbox-backdrop" id="lightboxBackdrop" onclick="closeLightbox(event)">
+    <div class="lightbox-modal">
+      <div class="lightbox-header">
+        <span class="lightbox-tag" id="lbTag">CASSETTE ARCHIVE // TAPE DECK</span>
+        <button class="lightbox-close" onclick="closeLightboxDirect()">✕</button>
+      </div>
+      <div class="lightbox-body">
+        <div class="lightbox-cover-wrapper">
+          <img class="lightbox-cover" id="lbCover" src="" alt="Album Cover">
+          <div class="lightbox-meta-box" id="lbMeta">
+            <div>STATUS: LOADED</div>
+            <div>STREAM: HI-RES 44.1kHz</div>
+            <div>DECK REF: BLACK BOX 1980s</div>
+          </div>
+        </div>
+        <div class="lightbox-details">
+          <div>
+            <div class="lightbox-title" id="lbTitle">曲名</div>
+            <div class="lightbox-artist" id="lbArtist">歌手</div>
+          </div>
+          <div class="lightbox-notes-content" id="lbNotes">筆記與歌詞內容</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <audio id="globalAudio" style="display:none;"></audio>
+
+  <script>
+    /* ===== Space Trip 橫移星空運算 ===== */
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+
+    function resizeCanvas() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const starPalette = ["#abbbff", "#ffffee", "#ffff7a", "#dffffd", "#ffaaa0", "#ffddd0"];
+    const stars = [];
+
+    for (let i = 0; i < 40; i++) {
+      stars.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        size: 1,
+        speed: Math.random() * 1.5 + 0.5,
+        color: starPalette[Math.floor(Math.random() * starPalette.length)]
+      });
+    }
+    for (let i = 0; i < 20; i++) {
+      stars.push({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        size: 2,
+        speed: Math.random() * 3 + 1.2,
+        color: starPalette[Math.floor(Math.random() * starPalette.length)]
+      });
+    }
+
+    function renderStars() {
+      ctx.clearRect(0, 0, width, height);
+      for (let star of stars) {
+        star.x -= star.speed;
+        if (star.x < -5) star.x = width + 5;
+
+        ctx.fillStyle = star.color;
+        ctx.fillRect(Math.floor(star.x), Math.floor(star.y), star.size, star.size);
+      }
+      requestAnimationFrame(renderStars);
+    }
+    renderStars();
+
+    /* ===== 音訊與卡帶管理 ===== */
+    let isEditing = false;
+    let isShuffle = false;
+    let currentFilter = 'ALL';
+    let currentTrackIndex = 0;
+    let eqInterval = null;
+
+    let musicList = [
+      {
+        id: 1788443714852,
+        title: "負けないで",
+        artist: "ZARD",
+        subtitle: "負けないで (ZARD / 坂井泉水)",
+        audioUrl: "https://www.image2url.com/r2/default/audio/1788443714852-c2a78ad9-9fe1-4d1f-b615-c71f6871d33c.mp3",
+        coverUrl: "https://picsum.photos/600/400?grayscale&random=93",
+        notes: "負けないで もう少し\n最後まで 走り抜けて\nどんなに 離れてても\n心は そばにいるわ\n追いかけて 遙かな夢を..."
+      },
+      {
+        id: 1788443714853,
+        title: "突然",
+        artist: "ZARD",
+        subtitle: "突然 (ZARD / 坂井泉水)",
+        audioUrl: "",
+        coverUrl: "https://picsum.photos/600/400?grayscale&random=94",
+        notes: "突然の風に吹かれて 夢中で駆け抜けた\nいつも僕のそばに君がいて\nあの日の約束は 今も胸の奥にある\nめぐる季節を越えて..."
+      },
+      {
+        id: 2,
+        title: "01. 宿醉.mp3",
+        artist: "路西法側寫",
+        subtitle: "宿醉.mp3 (黑盒子沉浸配樂)",
+        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+        coverUrl: "https://picsum.photos/600/400?random=1",
+        notes: "清晨五點多，天色從墨藍轉為一抹清冷的灰白。\n路西法在破曉的動態前進..."
+      },
+      {
+        id: 3,
+        title: "Plastic Love",
+        artist: "竹内まりや",
+        subtitle: "Plastic Love (竹内まりや)",
+        audioUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+        coverUrl: "https://picsum.photos/600/400?random=2",
+        notes: "City Pop 經典名作。\n突然のキスや 熱いまなざしで 恋のプログラムを狂わせないで..."
+      }
+    ];
+
+    const gridContainer = document.getElementById('gridContainer');
+    const filterBar = document.getElementById('filterBar');
+    const trackSelect = document.getElementById('trackSelect');
+    const audio = document.getElementById('globalAudio');
+    const lcdTimer = document.getElementById('lcdTimer');
+    const playBtn = document.getElementById('playBtn');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const trackSubtitle = document.getElementById('trackSubtitle');
+    const eqCols = document.querySelectorAll('.eq-col');
+
+    audio.volume = 0.8;
+
+    function init() {
+      renderFilters();
+      renderSelector();
+      renderCards();
+      if (musicList.length > 0) {
+        trackSelect.value = 0;
+        trackSubtitle.innerText = musicList[0].subtitle;
+      }
+    }
+
+    function renderFilters() {
+      const artists = ['ALL', ...new Set(musicList.map(item => item.artist).filter(Boolean))];
+      filterBar.innerHTML = '<span class="filter-label">ARTIST:</span>';
+      artists.forEach(artist => {
+        const btn = document.createElement('button');
+        btn.className = `filter-btn ${currentFilter === artist ? 'active' : ''}`;
+        btn.innerText = artist;
+        btn.onclick = () => setFilter(artist);
+        filterBar.appendChild(btn);
+      });
+    }
+
+    function setFilter(artist) {
+      currentFilter = artist;
+      renderFilters();
+      renderCards();
+    }
+
+    function renderSelector() {
+      trackSelect.innerHTML = '<option value="" disabled selected>-- 選擇曲目 --</option>';
+      musicList.forEach((item, index) => {
+        const opt = document.createElement('option');
+        opt.value = index;
+        opt.innerText = `[${item.artist}] ${item.title}`;
+        trackSelect.appendChild(opt);
+      });
+    }
+
+    function renderCards() {
+      gridContainer.innerHTML = '';
+      musicList.forEach((item, index) => {
+        const isVisible = currentFilter === 'ALL' || item.artist === currentFilter;
+        const card = document.createElement('div');
+        card.className = `cassette-card ${isEditing ? 'editing' : ''} ${!isVisible ? 'is-hidden' : ''}`;
+        card.dataset.index = index;
+
+        card.innerHTML = `
+          <div class="label-sticker">
+            <div class="card-title">${item.title}</div>
+            <div class="card-artist">${item.artist}</div>
+          </div>
+          <!-- 完整露出照片，點擊觸發 Zoom-in 燈箱或編輯上傳 -->
+          <div class="tape-window" onclick="handleCoverClick(${index})">
+            <img class="cover-image" src="${item.coverUrl}" alt="Cover">
+            <input type="file" class="file-input-${index}" accept="image/*" style="display:none;" onchange="handleImage(event, ${index})">
+          </div>
+          <!-- 底部控制列：左側按鍵 + 右側微型旋轉齒輪視窗 -->
+          <div class="card-bottom-bar">
+            <div class="card-actions">
+              <button class="card-btn" onclick="playIndex(${index})">PLAY</button>
+              <button class="card-btn" onclick="openLightbox(${index})">NOTE</button>
+              ${isEditing ? `<button class="card-btn" style="color:#ff5533;" onclick="deleteCard(${index})">DEL</button>` : ''}
+            </div>
+            <div class="mini-reel-window">
+              <div class="gear"></div>
+              <div class="gear"></div>
+            </div>
+          </div>
+          <div class="edit-panel">
+            <label>曲名：</label>
+            <input type="text" value="${item.title}" onchange="musicList[${index}].title=this.value; renderSelector(); renderCards();">
+            <label>歌手分類：</label>
+            <input type="text" value="${item.artist}" onchange="musicList[${index}].artist=this.value; renderFilters(); renderSelector(); renderCards();">
+            <label>頂部標註文字：</label>
+            <input type="text" value="${item.subtitle || ''}" onchange="musicList[${index}].subtitle=this.value;">
+            <label>MP3 網址：</label>
+            <input type="text" value="${item.audioUrl}" onchange="musicList[${index}].audioUrl=this.value;">
+            <label>筆記 / 歌詞：</label>
+            <textarea rows="2" onchange="musicList[${index}].notes=this.value;">${item.notes || ''}</textarea>
+          </div>
+        `;
+        gridContainer.appendChild(card);
+      });
+    }
+
+    function handleCoverClick(index) {
+      if (isEditing) {
+        document.querySelector(`.file-input-${index}`).click();
+      } else {
+        openLightbox(index);
+      }
+    }
+
+    /* ===== Zoom-in 燈箱效果核心 ===== */
+    function openLightbox(index) {
+      const item = musicList[index];
+      document.getElementById('lbCover').src = item.coverUrl;
+      document.getElementById('lbTitle').innerText = item.title;
+      document.getElementById('lbArtist').innerText = item.artist;
+      document.getElementById('lbNotes').innerText = item.notes || "（暫無歌詞與筆記記錄）";
+      document.getElementById('lbTag').innerText = `CASSETTE ARCHIVE // [TRACK 0${index + 1}]`;
+      
+      document.getElementById('lightboxBackdrop').classList.add('active');
+    }
+
+    function closeLightbox(e) {
+      if (e.target.id === 'lightboxBackdrop') {
+        document.getElementById('lightboxBackdrop').classList.remove('active');
+      }
+    }
+    function closeLightboxDirect() {
+      document.getElementById('lightboxBackdrop').classList.remove('active');
+    }
+
+    /* ===== 播放控制 ===== */
+    function playIndex(index) {
+      currentTrackIndex = index;
+      const item = musicList[index];
+      if (!item.audioUrl) return alert("請先填寫此曲目的 MP3 音訊網址！");
+
+      document.querySelectorAll('.cassette-card').forEach(c => c.classList.remove('playing'));
+      if (gridContainer.children[index]) gridContainer.children[index].classList.add('playing');
+
+      trackSelect.value = index;
+      trackSubtitle.innerText = item.subtitle || `${item.title} (${item.artist})`;
+      audio.src = item.audioUrl;
+      audio.play();
+      playBtn.innerText = '❚❚';
+      startEqualizer();
+    }
+
+    function togglePlay() {
+      if (!audio.src) {
+        if (musicList.length > 0) playIndex(0);
+        return;
+      }
+      if (audio.paused) {
+        audio.play();
+        playBtn.innerText = '❚❚';
+        startEqualizer();
+      } else {
+        audio.pause();
+        playBtn.innerText = '▶';
+        stopEqualizer();
+      }
+    }
+
+    function stopMusic() {
+      audio.pause();
+      audio.currentTime = 0;
+      playBtn.innerText = '▶';
+      lcdTimer.innerText = "00:00";
+      stopEqualizer();
+      document.querySelectorAll('.cassette-card').forEach(c => c.classList.remove('playing'));
+    }
+
+    function selectTrack(idx) {
+      if (idx !== "") playIndex(parseInt(idx));
+    }
+
+    function toggleShuffle() {
+      isShuffle = !isShuffle;
+      shuffleBtn.classList.toggle('active', isShuffle);
+    }
+
+    function changeVolume(val) {
+      audio.volume = val / 100;
+    }
+
+    audio.onended = () => {
+      if (musicList.length === 0) return;
+      if (isShuffle) {
+        let randIndex;
+        do {
+          randIndex = Math.floor(Math.random() * musicList.length);
+        } while (musicList.length > 1 && randIndex === currentTrackIndex);
+        playIndex(randIndex);
+      } else {
+        let nextIndex = (currentTrackIndex + 1) % musicList.length;
+        playIndex(nextIndex);
+      }
+    };
+
+    audio.ontimeupdate = () => {
+      const sec = Math.floor(audio.currentTime);
+      const m = String(Math.floor(sec / 60)).padStart(2, '0');
+      const s = String(sec % 60).padStart(2, '0');
+      lcdTimer.innerText = `${m}:${s}`;
+    };
+
+    function startEqualizer() {
+      if (eqInterval) clearInterval(eqInterval);
+      eqInterval = setInterval(() => {
+        eqCols.forEach(col => {
+          const randHeight = Math.floor(Math.random() * 16) + 4;
+          col.style.height = `${randHeight}px`;
+        });
+      }, 90);
+    }
+
+    function stopEqualizer() {
+      clearInterval(eqInterval);
+      eqCols.forEach(col => col.style.height = '4px');
+    }
+
+    function handleImage(e, index) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        musicList[index].coverUrl = evt.target.result;
+        renderCards();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    document.getElementById('toggleEditBtn').onclick = () => {
+      isEditing = !isEditing;
+      document.getElementById('toggleEditBtn').innerText = `編輯模式: ${isEditing ? '開' : '關'}`;
+      document.getElementById('toggleEditBtn').classList.toggle('active', isEditing);
+      renderCards();
+    };
+
+    document.getElementById('addCardBtn').onclick = () => {
+      musicList.push({
+        id: Date.now(),
+        title: "未命名曲目.mp3",
+        artist: "自訂歌手",
+        subtitle: "未命名曲目 (新標籤)",
+        audioUrl: "",
+        coverUrl: "https://picsum.photos/600/400",
+        notes: ""
+      });
+      init();
+    };
+
+    function deleteCard(index) {
+      musicList.splice(index, 1);
+      init();
+    }
+
+    document.getElementById('exportBtn').onclick = () => {
+      const blob = new Blob([JSON.stringify(musicList, null, 2)], {type: "application/json"});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = "cassette_tape_data.json";
+      a.click();
+    };
+
+    document.getElementById('importFile').onchange = (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        try {
+          musicList = JSON.parse(evt.target.result);
+          currentFilter = 'ALL';
+          init();
+        } catch(err) { alert("JSON 格式錯誤"); }
+      };
+      reader.readAsText(file);
+    };
+
+    init();
+  </script>
+</body>
+</html>
