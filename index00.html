@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Soros — Personal Archive</title>
-  <!-- Google Fonts: Patrick Hand SC, Caveat, Space Grotesk, Newsreader -->
+  <!-- 統一引入 Patrick Hand SC 與輔助規格字 Space Grotesk -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600;700&family=Patrick+Hand+SC&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand+SC&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
   
   <style>
     :root {
@@ -122,7 +122,7 @@
       line-height: 0.95;
       color: var(--text-main);
       text-transform: uppercase;
-      margin-bottom: 1.1rem;
+      margin-bottom: 1.2rem;
       display: flex;
       align-items: baseline;
       gap: 0.85rem;
@@ -134,18 +134,18 @@
       font-size: 4.8rem;
     }
 
-    /* 手寫隨筆感字型 (Caveat) */
+    /* 箭頭所指的自我介紹：改用與框框標籤相同的 Patrick Hand SC */
     .hero-bio {
-      font-family: 'Caveat', cursive;
-      font-size: 1.55rem;
+      font-family: 'Patrick Hand SC', cursive, sans-serif;
+      font-size: 1.35rem;
       line-height: 1.55;
-      color: #3d3b36;
+      letter-spacing: 0.04em;
+      color: #383632;
       max-width: 610px;
       margin-bottom: 2rem;
-      font-weight: 500;
-      letter-spacing: 0.015em;
     }
 
+    /* 橙色框框中的標籤 */
     .tags-row {
       display: flex;
       flex-wrap: wrap;
@@ -287,9 +287,10 @@
     }
 
     .card-desc {
-      font-family: 'Newsreader', Georgia, serif;
-      font-size: 0.88rem;
-      line-height: 1.5;
+      font-family: 'Patrick Hand SC', cursive, sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.45;
+      letter-spacing: 0.02em;
       color: var(--text-muted);
     }
 
@@ -330,7 +331,7 @@
         font-size: 3rem;
       }
       .hero-bio {
-        font-size: 1.35rem;
+        font-size: 1.2rem;
       }
     }
   </style>
@@ -352,7 +353,7 @@
       <div class="hero-content">
         <h1 class="hand-headline">SOROS<span class="accent-mark">.</span></h1>
         
-        <!-- 手寫隨筆風格簡介 (Caveat) -->
+        <!-- 與標籤同款字型 (Patrick Hand SC) -->
         <p class="hero-bio">
           Driven by boundless curiosity for the unknown and inexplicable. Exploring the intersections of classical literature, philosophical discourse, and analytical detective logic—while documenting gameplay and cognitive journeys across digital realms. A quiet observatory for deconstructing truth and uncharted mysteries.
         </p>
