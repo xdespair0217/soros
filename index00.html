@@ -2,21 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Soros — Personal Archive</title>
-  <!-- 統一引入 Patrick Hand SC 與輔助規格字 Space Grotesk -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand+SC&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
   
   <style>
     :root {
-      --bg-canvas: #f6f5ef;        /* 雅緻和紙暖白底色 */
-      --text-main: #1b1a17;        /* 沉著墨黑主色 */
-      --text-muted: #5a5851;       /* 灰墨副色 */
-      --accent-navy: #183359;      /* 和紙專屬深靛藍 */
-      --border-subtle: #dedbd0;    /* 紙張邊界細線 */
-      --card-bg: rgba(255, 255, 255, 0.5);
+      --bg-canvas: #f6f5ef;
+      --text-main: #1b1a17;
+      --text-muted: #5a5851;
+      --accent-navy: #183359;
+      --border-subtle: #dedbd0;
+      --card-bg: rgba(255, 255, 255, 0.55);
       --card-border: rgba(222, 219, 208, 0.9);
     }
 
@@ -24,6 +23,7 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -33,10 +33,9 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 3rem 1.25rem;
+      padding: 2.5rem 1rem;
       position: relative;
       overflow-x: hidden;
-      /* 深邃星空漸層底色與星雲光暈 */
       background: 
         radial-gradient(ellipse at 15% 25%, rgba(42, 60, 110, 0.45) 0%, transparent 55%),
         radial-gradient(ellipse at 85% 75%, rgba(68, 38, 98, 0.35) 0%, transparent 60%),
@@ -44,7 +43,6 @@
         linear-gradient(180deg, #07090e 0%, #0c101c 45%, #05070c 100%);
     }
 
-    /* 動態星空背景畫布 */
     #star-canvas {
       position: fixed;
       top: 0;
@@ -55,31 +53,29 @@
       pointer-events: none;
     }
 
-    /* 紙張主體容器（浮於星空之上） */
     .sheet-container {
       position: relative;
       z-index: 1;
       background-color: var(--bg-canvas);
       width: 100%;
-      max-width: 980px;
+      max-width: 960px;
       border-radius: 14px;
       box-shadow: 
         0 30px 80px rgba(0, 0, 0, 0.65),
         0 0 40px rgba(78, 116, 175, 0.15),
         0 0 1px rgba(255, 255, 255, 0.25);
-      padding: 3.8rem 4.2rem;
+      padding: 3.5rem 4rem;
       display: flex;
       flex-direction: column;
       backdrop-filter: blur(8px);
     }
 
-    /* 頂部中繼欄 */
     .top-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 1.2rem;
-      margin-bottom: 2.8rem;
+      padding-bottom: 1rem;
+      margin-bottom: 2.5rem;
       border-bottom: 1px solid var(--border-subtle);
     }
 
@@ -102,13 +98,12 @@
       background: rgba(255, 255, 255, 0.4);
     }
 
-    /* 個人核心資訊區塊 */
     .hero-section {
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      gap: 3.5rem;
-      margin-bottom: 3.2rem;
+      gap: 3rem;
+      margin-bottom: 2.8rem;
     }
 
     .hero-content {
@@ -117,24 +112,23 @@
 
     .hand-headline {
       font-family: 'Patrick Hand SC', cursive, sans-serif;
-      font-size: 4.6rem;
+      font-size: 4.5rem;
       letter-spacing: 0.08em;
       line-height: 0.95;
       color: var(--text-main);
       text-transform: uppercase;
-      margin-bottom: 1.2rem;
+      margin-bottom: 1rem;
       display: flex;
       align-items: baseline;
-      gap: 0.85rem;
+      gap: 0.6rem;
     }
 
     .hand-headline .accent-mark {
       font-family: 'Patrick Hand SC', cursive, sans-serif;
       color: var(--accent-navy);
-      font-size: 4.8rem;
+      font-size: 4.5rem;
     }
 
-    /* 箭頭所指的自我介紹：改用與框框標籤相同的 Patrick Hand SC */
     .hero-bio {
       font-family: 'Patrick Hand SC', cursive, sans-serif;
       font-size: 1.35rem;
@@ -142,19 +136,18 @@
       letter-spacing: 0.04em;
       color: #383632;
       max-width: 610px;
-      margin-bottom: 2rem;
+      margin-bottom: 1.8rem;
     }
 
-    /* 橙色框框中的標籤 */
     .tags-row {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.75rem;
+      gap: 0.65rem;
     }
 
     .tag-item {
       font-family: 'Patrick Hand SC', cursive, sans-serif;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       letter-spacing: 0.08em;
       color: var(--accent-navy);
       background: rgba(24, 51, 89, 0.05);
@@ -164,12 +157,12 @@
       text-transform: uppercase;
     }
 
-    /* 右側正方形圓角頭像區塊 */
+    /* 正方形圓角頭像 */
     .avatar-wrapper {
       position: relative;
       flex-shrink: 0;
-      width: 170px;
-      height: 170px;
+      width: 165px;
+      height: 165px;
     }
 
     .avatar-frame {
@@ -177,7 +170,7 @@
       height: 100%;
       border-radius: 16px;
       border: 1px solid var(--border-subtle);
-      padding: 7px;
+      padding: 6px;
       background: rgba(255, 255, 255, 0.65);
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
     }
@@ -187,7 +180,7 @@
       height: 100%;
       border-radius: 11px;
       object-fit: cover;
-      object-position: 65% 18%; /* 聚焦人物面部 */
+      object-position: 65% 18%;
       filter: grayscale(100%) contrast(105%);
       transition: filter 0.35s ease, transform 0.35s ease;
       display: block;
@@ -220,8 +213,8 @@
     .section-header {
       display: flex;
       align-items: baseline;
-      gap: 0.75rem;
-      margin-bottom: 1.25rem;
+      gap: 0.6rem;
+      margin-bottom: 1.1rem;
     }
 
     .section-number {
@@ -234,104 +227,187 @@
 
     .section-title {
       font-family: 'Patrick Hand SC', cursive, sans-serif;
-      font-size: 1.5rem;
+      font-size: 1.45rem;
       letter-spacing: 0.06em;
       color: var(--text-main);
       text-transform: uppercase;
     }
 
+    /* 電腦端 4 欄 */
     .cards-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 1.2rem;
+      gap: 1.1rem;
     }
 
     .link-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
       border-radius: 8px;
-      padding: 1.5rem 1.3rem;
+      padding: 1.3rem 1.2rem;
       text-decoration: none;
       color: inherit;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 185px;
+      min-height: 175px;
       transition: all 0.22s ease;
     }
 
     .link-card:hover {
-      background: rgba(255, 255, 255, 0.92);
+      background: rgba(255, 255, 255, 0.95);
       border-color: var(--accent-navy);
       transform: translateY(-3px);
-      box-shadow: 0 10px 22px rgba(24, 51, 89, 0.1);
+      box-shadow: 0 10px 20px rgba(24, 51, 89, 0.1);
     }
 
     .card-category {
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       font-weight: 600;
       letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--accent-navy);
-      margin-bottom: 0.65rem;
+      margin-bottom: 0.5rem;
     }
 
     .card-title {
       font-family: 'Patrick Hand SC', cursive, sans-serif;
-      font-size: 1.55rem;
+      font-size: 1.45rem;
       letter-spacing: 0.04em;
       line-height: 1.1;
       color: var(--text-main);
       text-transform: uppercase;
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.5rem;
     }
 
     .card-desc {
       font-family: 'Patrick Hand SC', cursive, sans-serif;
-      font-size: 1.05rem;
-      line-height: 1.45;
+      font-size: 1rem;
+      line-height: 1.4;
       letter-spacing: 0.02em;
       color: var(--text-muted);
     }
 
     .card-arrow {
-      margin-top: 1rem;
+      margin-top: 0.8rem;
       font-size: 0.85rem;
       color: var(--accent-navy);
       text-align: right;
       font-weight: 600;
     }
 
-    /* 響應式排版 (RWD) */
-    @media (max-width: 900px) {
+    /* ---------------------------------------------------- */
+    /* 手機端專屬調校 (Mobile Optimization: Compact 2x2 Grid) */
+    /* ---------------------------------------------------- */
+    @media (max-width: 768px) {
+      body {
+        padding: 0.75rem 0.5rem;
+      }
+
+      .sheet-container {
+        padding: 1.8rem 1.4rem;
+        border-radius: 10px;
+      }
+
+      .top-bar {
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.8rem;
+      }
+
+      /* 頂部姓名與頭像左右並排保持緊湊 */
+      .hero-section {
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1.2rem;
+      }
+
+      .hand-headline {
+        font-size: 2.8rem;
+        margin-bottom: 0.2rem;
+      }
+
+      .hand-headline .accent-mark {
+        font-size: 2.8rem;
+      }
+
+      .avatar-wrapper {
+        width: 86px;
+        height: 86px;
+      }
+
+      .avatar-frame {
+        border-radius: 10px;
+        padding: 4px;
+      }
+
+      .avatar-img {
+        border-radius: 7px;
+      }
+
+      .avatar-seal {
+        font-size: 0.65rem;
+        padding: 0.1rem 0.35rem;
+        bottom: -4px;
+        right: -4px;
+      }
+
+      .hero-bio {
+        font-size: 1.05rem;
+        line-height: 1.45;
+        margin-bottom: 1.1rem;
+      }
+
+      .tags-row {
+        gap: 0.4rem;
+        margin-bottom: 1.4rem;
+      }
+
+      .tag-item {
+        font-size: 0.88rem;
+        padding: 0.15rem 0.55rem;
+      }
+
+      .section-header {
+        margin-bottom: 0.8rem;
+      }
+
+      .section-title {
+        font-size: 1.2rem;
+      }
+
+      /* 重點：手機端維持 2x2 雙欄宮格，一次看齊四個框框 */
       .cards-grid {
         grid-template-columns: repeat(2, 1fr);
+        gap: 0.65rem;
       }
-      .sheet-container {
-        padding: 2.5rem 2rem;
-      }
-      .hand-headline {
-        font-size: 3.6rem;
-      }
-    }
 
-    @media (max-width: 600px) {
-      .cards-grid {
-        grid-template-columns: 1fr;
+      .link-card {
+        min-height: 105px;
+        padding: 0.85rem 0.75rem;
+        border-radius: 6px;
       }
-      .hero-section {
-        flex-direction: column-reverse;
-        gap: 1.8rem;
+
+      .card-category {
+        font-size: 0.58rem;
+        margin-bottom: 0.3rem;
+        letter-spacing: 0.08em;
       }
-      .avatar-wrapper {
-        width: 130px;
-        height: 130px;
+
+      .card-title {
+        font-size: 1.08rem;
+        line-height: 1.15;
+        margin-bottom: 0;
       }
-      .hand-headline {
-        font-size: 3rem;
+
+      /* 手機端隱藏冗長說明，保持畫面俐落純淨 */
+      .card-desc {
+        display: none;
       }
-      .hero-bio {
-        font-size: 1.2rem;
+
+      .card-arrow {
+        margin-top: 0.4rem;
+        font-size: 0.75rem;
       }
     }
   </style>
@@ -352,21 +428,8 @@
     <section class="hero-section">
       <div class="hero-content">
         <h1 class="hand-headline">SOROS<span class="accent-mark">.</span></h1>
-        
-        <!-- 與標籤同款字型 (Patrick Hand SC) -->
-        <p class="hero-bio">
-          Driven by boundless curiosity for the unknown and inexplicable. Exploring the intersections of classical literature, philosophical discourse, and analytical detective logic—while documenting gameplay and cognitive journeys across digital realms. A quiet observatory for deconstructing truth and uncharted mysteries.
-        </p>
-
-        <div class="tags-row">
-          <span class="tag-item">Logic & Mystery</span>
-          <span class="tag-item">Philosophy & Letters</span>
-          <span class="tag-item">Gameplay Archives</span>
-          <span class="tag-item">Deconstruction</span>
-        </div>
       </div>
 
-      <!-- 右側正方形圓角頭像 -->
       <div class="avatar-wrapper">
         <div class="avatar-frame">
           <img src="unnamed.jpg" alt="Soros Portrait" class="avatar-img" onerror="this.src='avatar.jpg'">
@@ -375,7 +438,19 @@
       </div>
     </section>
 
-    <!-- 底部功能卡片區塊 -->
+    <!-- 簡介與標籤 -->
+    <p class="hero-bio">
+      Driven by boundless curiosity for the unknown and inexplicable. Exploring the intersections of classical literature, philosophical discourse, and analytical detective logic—while documenting gameplay and cognitive journeys across digital realms. A quiet observatory for deconstructing truth and uncharted mysteries.
+    </p>
+
+    <div class="tags-row">
+      <span class="tag-item">Logic & Mystery</span>
+      <span class="tag-item">Philosophy & Letters</span>
+      <span class="tag-item">Gameplay Archives</span>
+      <span class="tag-item">Deconstruction</span>
+    </div>
+
+    <!-- 底部功能卡片區塊（手機端為 2x2 宮格） -->
     <section class="links-section">
       <div class="section-header">
         <span class="section-number">01</span>
