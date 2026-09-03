@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Soros — Personal Archive</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand+SC&family=Newsreader:ital,opsz,wght@0,6..72,400..600;1,6..72,400&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-canvas: #f5f4ed;        /* 和紙暖白底色 */
+      --text-main: #1d1c19;        /* 墨黑主色 */
+      --text-muted: #626059;       /* 灰墨字 */
+      --accent-navy: #1b365d;      /* 沉穩深靛藍 */
+      --border-subtle: #dfdcd2;    /* 紙張邊界細線 */
+      --card-bg: rgba(255, 255, 255, 0.45);
+      --card-border: rgba(223, 220, 210, 0.85);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: #242424;
+      color: var(--text-main);
+      font-family: 'Space Grotesk', -apple-system, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 3rem 1.25rem;
+    }
+
+    .sheet-container {
+      background-color: var(--bg-canvas);
+      width: 100%;
+      max-width: 980px;
+      border-radius: 12px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.38);
+      padding: 3.8rem 4.2rem;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1.2rem;
+      margin-bottom: 3rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .top-meta {
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .status-badge {
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.6rem;
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.35);
+    }
+
+    .hero-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 3.5rem;
+      margin-bottom: 3.5rem;
+    }
+
+    .hero-content {
+      flex: 1;
+    }
+
+    .hand-headline {
+      font-family: 'Patrick Hand SC', cursive, sans-serif;
+      font-size: 4.6rem;
+      letter-spacing: 0.08em;
+      line-height: 0.95;
+      color: var(--text-main);
+      text-transform: uppercase;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.85rem;
+    }
+
+    .hand-headline .accent-mark {
+      font-family: 'Patrick Hand SC', cursive, sans-serif;
+      color: var(--accent-navy);
+      font-size: 4.8rem;
+    }
+
+    .hero-bio {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 1.15rem;
+      line-height: 1.75;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin-bottom: 2rem;
+    }
+
+    .tags-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .tag-item {
+      font-family: 'Patrick Hand SC', cursive, sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.08em;
+      color: var(--accent-navy);
+      background: rgba(27, 54, 93, 0.05);
+      border: 1px solid rgba(27, 54, 93, 0.18);
+      padding: 0.2rem 0.75rem;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    /* 正方形圓角頭像區塊 */
+    .avatar-wrapper {
+      position: relative;
+      flex-shrink: 0;
+      width: 170px;
+      height: 170px;
+    }
+
+    .avatar-frame {
+      width: 100%;
+      height: 100%;
+      border-radius: 14px; /* 四周柔和圓弧 */
+      border: 1px solid var(--border-subtle);
+      padding: 7px;
+      background: rgba(255, 255, 255, 0.6);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+    }
+
+    .avatar-img {
+      width: 100%;
+      height: 100%;
+      border-radius: 9px;
+      object-fit: cover;
+      object-position: 65% 18%; /* 聚焦人物面部核心 */
+      filter: grayscale(100%) contrast(105%);
+      transition: filter 0.35s ease, transform 0.35s ease;
+      display: block;
+    }
+
+    .avatar-wrapper:hover .avatar-img {
+      filter: grayscale(0%);
+      transform: scale(1.02);
+    }
+
+    .avatar-seal {
+      position: absolute;
+      bottom: -6px;
+      right: -6px;
+      font-family: 'Patrick Hand SC', cursive, sans-serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.06em;
+      color: var(--accent-navy);
+      background: var(--bg-canvas);
+      border: 1px solid var(--accent-navy);
+      border-radius: 6px;
+      padding: 0.15rem 0.45rem;
+    }
+
+    .links-section {
+      margin-top: auto;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: baseline;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .section-number {
+      font-size: 0.72rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .section-title {
+      font-family: 'Patrick Hand SC', cursive, sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.06em;
+      color: var(--text-main);
+      text-transform: uppercase;
+    }
+
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.2rem;
+    }
+
+    .link-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1.5rem 1.3rem;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 185px;
+      transition: all 0.22s ease;
+    }
+
+    .link-card:hover {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: var(--accent-navy);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 18px rgba(27, 54, 93, 0.08);
+    }
+
+    .card-category {
+      font-size: 0.68rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent-navy);
+      margin-bottom: 0.65rem;
+    }
+
+    .card-title {
+      font-family: 'Patrick Hand SC', cursive, sans-serif;
+      font-size: 1.55rem;
+      letter-spacing: 0.04em;
+      line-height: 1.1;
+      color: var(--text-main);
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+    }
+
+    .card-desc {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      color: var(--text-muted);
+    }
+
+    .card-arrow {
+      margin-top: 1rem;
+      font-size: 0.85rem;
+      color: var(--accent-navy);
+      text-align: right;
+      font-weight: 600;
+    }
+
+    @media (max-width: 900px) {
+      .cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .sheet-container {
+        padding: 2.5rem 2rem;
+      }
+      .hand-headline {
+        font-size: 3.6rem;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-section {
+        flex-direction: column-reverse;
+        gap: 1.8rem;
+      }
+      .avatar-wrapper {
+        width: 130px;
+        height: 130px;
+      }
+      .hand-headline {
+        font-size: 3rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="sheet-container">
+    <header class="top-bar">
+      <div class="top-meta">ARCHIVE // V1.0.0 · 2026.09</div>
+      <div class="status-badge">OBSERVER LOG</div>
+    </header>
+
+    <section class="hero-section">
+      <div class="hero-content">
+        <h1 class="hand-headline">SOROS<span class="accent-mark">.</span></h1>
+        
+        <p class="hero-bio">
+          Driven by boundless curiosity for the unknown and inexplicable. Exploring the intersections of classical literature, philosophical discourse, and analytical detective logic—while documenting gameplay and cognitive journeys across digital realms. A quiet observatory for deconstructing truth and uncharted mysteries.
+        </p>
+
+        <div class="tags-row">
+          <span class="tag-item">Logic & Mystery</span>
+          <span class="tag-item">Philosophy & Letters</span>
+          <span class="tag-item">Gameplay Archives</span>
+          <span class="tag-item">Deconstruction</span>
+        </div>
+      </div>
+
+      <!-- 右側正方形圓角頭像 -->
+      <div class="avatar-wrapper">
+        <div class="avatar-frame">
+          <img src="unnamed.jpg" alt="Soros Portrait" class="avatar-img" onerror="this.src='avatar.jpg'">
+        </div>
+        <div class="avatar-seal">SR</div>
+      </div>
+    </section>
+
+    <section class="links-section">
+      <div class="section-header">
+        <span class="section-number">01</span>
+        <h2 class="section-title">CHANNELS & WORKSPACES</h2>
+      </div>
+
+      <div class="cards-grid">
+        <a href="#" class="link-card" target="_blank">
+          <div>
+            <div class="card-category">Media / Broadcast</div>
+            <div class="card-title">GAMEPLAY CHRONICLES</div>
+            <div class="card-desc">Curated game recordings, mechanic breakdowns, and virtual world exploration.</div>
+          </div>
+          <div class="card-arrow">↗</div>
+        </a>
+
+        <a href="#" class="link-card" target="_blank">
+          <div>
+            <div class="card-category">Research / Analysis</div>
+            <div class="card-title">LOGIC & ENIGMAS</div>
+            <div class="card-desc">Rational dissections of unexplained phenomena and deductive detective models.</div>
+          </div>
+          <div class="card-arrow">↗</div>
+        </a>
+
+        <a href="#" class="link-card" target="_blank">
+          <div>
+            <div class="card-category">Writings / Thought</div>
+            <div class="card-title">LETTERS & ESSENCE</div>
+            <div class="card-desc">Meditations on classical poetry, human civilization, and timeless philosophy.</div>
+          </div>
+          <div class="card-arrow">↗</div>
+        </a>
+
+        <a href="#" class="link-card" target="_blank">
+          <div>
+            <div class="card-category">Connect / Dispatch</div>
+            <div class="card-title">DISPATCH STATION</div>
+            <div class="card-desc">Direct communications, collaborative projects, and contact channels.</div>
+          </div>
+          <div class="card-arrow">↗</div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+</body>
+</html>
