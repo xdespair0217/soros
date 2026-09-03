@@ -10,13 +10,13 @@
   
   <style>
     :root {
-      --bg-canvas: #f5f4ed;        /* 和紙暖白底色 */
-      --text-main: #1d1c19;        /* 墨黑主色 */
-      --text-muted: #626059;       /* 灰墨字 */
-      --accent-navy: #1b365d;      /* 沉穩深靛藍 */
-      --border-subtle: #dfdcd2;    /* 紙張邊界細線 */
-      --card-bg: rgba(255, 255, 255, 0.45);
-      --card-border: rgba(223, 220, 210, 0.85);
+      --bg-canvas: #f6f5ef;        /* 雅緻和紙暖白底色 */
+      --text-main: #1b1a17;        /* 沉著墨黑主色 */
+      --text-muted: #5a5851;       /* 灰墨副色 */
+      --accent-navy: #183359;      /* 和紙專屬深靛藍 */
+      --border-subtle: #dedbd0;    /* 紙張邊界細線 */
+      --card-bg: rgba(255, 255, 255, 0.5);
+      --card-border: rgba(222, 219, 208, 0.9);
     }
 
     * {
@@ -26,7 +26,6 @@
     }
 
     body {
-      background-color: #242424;
       color: var(--text-main);
       font-family: 'Space Grotesk', -apple-system, sans-serif;
       min-height: 100vh;
@@ -34,18 +33,41 @@
       justify-content: center;
       align-items: center;
       padding: 3rem 1.25rem;
+      position: relative;
+      overflow-x: hidden;
+      /* 深邃星空漸層底色與星雲光暈 */
+      background: 
+        radial-gradient(ellipse at 15% 25%, rgba(42, 60, 110, 0.45) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 75%, rgba(68, 38, 98, 0.35) 0%, transparent 60%),
+        radial-gradient(circle at 50% 50%, rgba(18, 28, 55, 0.5) 0%, transparent 70%),
+        linear-gradient(180deg, #07090e 0%, #0c101c 45%, #05070c 100%);
+    }
+
+    #star-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 0;
+      pointer-events: none;
     }
 
     .sheet-container {
+      position: relative;
+      z-index: 1;
       background-color: var(--bg-canvas);
       width: 100%;
       max-width: 980px;
-      border-radius: 12px;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.38);
+      border-radius: 14px;
+      box-shadow: 
+        0 30px 80px rgba(0, 0, 0, 0.65),
+        0 0 40px rgba(78, 116, 175, 0.15),
+        0 0 1px rgba(255, 255, 255, 0.25);
       padding: 3.8rem 4.2rem;
       display: flex;
       flex-direction: column;
-      position: relative;
+      backdrop-filter: blur(8px);
     }
 
     .top-bar {
@@ -67,13 +89,13 @@
 
     .status-badge {
       font-size: 0.7rem;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      padding: 0.25rem 0.6rem;
+      padding: 0.25rem 0.65rem;
       border: 1px solid var(--border-subtle);
       border-radius: 4px;
       color: var(--text-muted);
-      background: rgba(255, 255, 255, 0.35);
+      background: rgba(255, 255, 255, 0.4);
     }
 
     .hero-section {
@@ -127,14 +149,13 @@
       font-size: 1.1rem;
       letter-spacing: 0.08em;
       color: var(--accent-navy);
-      background: rgba(27, 54, 93, 0.05);
-      border: 1px solid rgba(27, 54, 93, 0.18);
+      background: rgba(24, 51, 89, 0.05);
+      border: 1px solid rgba(24, 51, 89, 0.2);
       padding: 0.2rem 0.75rem;
       border-radius: 4px;
       text-transform: uppercase;
     }
 
-    /* 正方形圓角頭像區塊 */
     .avatar-wrapper {
       position: relative;
       flex-shrink: 0;
@@ -145,19 +166,19 @@
     .avatar-frame {
       width: 100%;
       height: 100%;
-      border-radius: 14px; /* 四周柔和圓弧 */
+      border-radius: 16px;
       border: 1px solid var(--border-subtle);
       padding: 7px;
-      background: rgba(255, 255, 255, 0.6);
-      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04);
+      background: rgba(255, 255, 255, 0.65);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
     }
 
     .avatar-img {
       width: 100%;
       height: 100%;
-      border-radius: 9px;
+      border-radius: 11px;
       object-fit: cover;
-      object-position: 65% 18%; /* 聚焦人物面部核心 */
+      object-position: 65% 18%;
       filter: grayscale(100%) contrast(105%);
       transition: filter 0.35s ease, transform 0.35s ease;
       display: block;
@@ -230,10 +251,10 @@
     }
 
     .link-card:hover {
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.92);
       border-color: var(--accent-navy);
       transform: translateY(-3px);
-      box-shadow: 0 8px 18px rgba(27, 54, 93, 0.08);
+      box-shadow: 0 10px 22px rgba(24, 51, 89, 0.1);
     }
 
     .card-category {
@@ -302,6 +323,8 @@
 </head>
 <body>
 
+  <canvas id="star-canvas"></canvas>
+
   <main class="sheet-container">
     <header class="top-bar">
       <div class="top-meta">ARCHIVE // V1.0.0 · 2026.09</div>
@@ -324,7 +347,6 @@
         </div>
       </div>
 
-      <!-- 右側正方形圓角頭像 -->
       <div class="avatar-wrapper">
         <div class="avatar-frame">
           <img src="unnamed.jpg" alt="Soros Portrait" class="avatar-img" onerror="this.src='avatar.jpg'">
@@ -379,5 +401,64 @@
     </section>
   </main>
 
+  <script>
+    (function () {
+      const canvas = document.getElementById('star-canvas');
+      const ctx = canvas.getContext('2d');
+      let stars = [];
+      const numStars = 140;
+
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
+
+      function initStars() {
+        stars = [];
+        for (let i = 0; i < numStars; i++) {
+          stars.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height,
+            radius: Math.random() * 1.2 + 0.3,
+            alpha: Math.random() * 0.7 + 0.2,
+            twinkleSpeed: (Math.random() * 0.02 + 0.005) * (Math.random() > 0.5 ? 1 : -1)
+          });
+        }
+      }
+
+      function animate() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        stars.forEach(star => {
+          star.alpha += star.twinkleSpeed;
+          if (star.alpha > 0.95) {
+            star.alpha = 0.95;
+            star.twinkleSpeed = -star.twinkleSpeed;
+          } else if (star.alpha < 0.15) {
+            star.alpha = 0.15;
+            star.twinkleSpeed = -star.twinkleSpeed;
+          }
+
+          ctx.beginPath();
+          ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(235, 240, 255, ${star.alpha})`;
+          ctx.shadowBlur = star.radius > 1 ? 6 : 0;
+          ctx.shadowColor = 'rgba(200, 225, 255, 0.8)';
+          ctx.fill();
+        });
+
+        requestAnimationFrame(animate);
+      }
+
+      window.addEventListener('resize', () => {
+        resizeCanvas();
+        initStars();
+      });
+
+      resizeCanvas();
+      initStars();
+      animate();
+    })();
+  </script>
 </body>
 </html>
