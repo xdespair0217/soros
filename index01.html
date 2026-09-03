@@ -38,12 +38,12 @@
       background-color: var(--bg-dark);
       color: var(--text-light);
       min-height: 100vh;
-      padding: 30px 24px 80px;
+      padding: 40px 24px 80px;
       overflow-x: hidden;
       position: relative;
     }
 
-    /* Space Trip 星空畫布背景 */
+    /* Space Trip 橫移星空背景 */
     #starfield {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -58,10 +58,42 @@
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 22px;
     }
 
-    /* ===== 機架主控台 (CHRONO MASTER RACK) ===== */
+    /* ===== 1. 網站最頂端獨立主標題 ===== */
+    .site-master-header {
+      width: 100%;
+      text-align: center;
+      padding: 10px 0 16px;
+      border-bottom: 1px solid #1f2530;
+    }
+    .site-main-title {
+      font-family: var(--font-tech);
+      font-size: 2.1rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      color: #ffffff;
+      text-shadow: 0 0 16px rgba(255, 85, 51, 0.4);
+      display: inline-block;
+    }
+    .site-main-title span {
+      color: #ff5533;
+      margin-left: 10px;
+      font-size: 1.5rem;
+      font-weight: 400;
+      letter-spacing: 0.08em;
+    }
+    .site-subtitle {
+      font-family: var(--font-tech);
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      letter-spacing: 0.25em;
+      margin-top: 6px;
+      text-transform: uppercase;
+    }
+
+    /* ===== 2. 長條音樂控制艙 ===== */
     .master-rack-deck {
       width: 100%;
       background: linear-gradient(180deg, #1b202a 0%, #101217 100%);
@@ -226,68 +258,60 @@
       -webkit-appearance: none; width: 8px; height: 8px; border-radius: 50%; background: var(--amber);
     }
 
-    /* ===== 次級副面板（銘板標題、分類與管理） ===== */
-    .sub-control-panel {
+    /* ===== 3. 標籤雲快速點選區 (Tag Cloud Panel) ===== */
+    .tag-cloud-panel {
       width: 100%;
+      background: rgba(14, 17, 23, 0.8);
+      border: 1px solid #252b38;
+      border-radius: 6px;
+      padding: 12px 18px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 8px 16px;
-      background: rgba(14, 16, 21, 0.75);
-      border: 1px solid #222733;
-      border-radius: 5px;
-      gap: 12px;
+      justify-content: space-between;
+      gap: 16px;
       flex-wrap: wrap;
     }
-
-    .panel-brand-title {
+    .tag-cloud-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      flex: 1;
+    }
+    .tag-cloud-label {
       font-family: var(--font-tech);
-      font-size: 0.95rem;
+      font-size: 0.76rem;
       font-weight: 700;
-      color: #ff5533;
-      letter-spacing: 0.12em;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .panel-brand-sub {
-      font-size: 0.75rem;
-      color: var(--text-dim);
-      font-weight: 400;
-      letter-spacing: 0.05em;
-    }
-
-    .filter-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      overflow-x: auto;
-      white-space: nowrap;
-      padding-bottom: 2px;
-    }
-    .filter-label {
-      font-family: var(--font-tech);
-      font-size: 0.75rem;
-      color: var(--text-dim);
-      font-weight: 600;
-      letter-spacing: 0.1em;
-    }
-    .filter-btn {
-      background: rgba(22, 25, 33, 0.9);
-      border: 1px solid #2d3340;
-      color: #8c93a4;
-      padding: 4px 12px;
-      font-size: 0.8rem;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-    .filter-btn.active {
-      background: rgba(255, 184, 0, 0.15);
-      border-color: var(--amber);
       color: var(--amber);
+      letter-spacing: 0.12em;
+      margin-right: 6px;
+    }
+    .cloud-tag {
+      background: rgba(26, 30, 40, 0.85);
+      border: 1px solid #2c3445;
+      color: #9aa5b8;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+    }
+    .cloud-tag:hover {
+      border-color: var(--cyan);
+      color: #ffffff;
+      box-shadow: 0 0 8px rgba(56, 189, 248, 0.3);
+    }
+    .cloud-tag.active {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--cyan);
+      color: var(--cyan);
       font-weight: 700;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
     }
 
+    /* 管理工具欄 */
     .admin-group button {
       background: #181b22;
       color: #c4c9d4;
@@ -301,7 +325,7 @@
     }
     .admin-group button.active { background: #ff5533; color: #0c0e12; font-weight: 700; }
 
-    /* ===== 卡帶網格展示區 ===== */
+    /* ===== 4. 卡帶展示網格 ===== */
     .cassette-grid {
       width: 100%;
       display: grid;
@@ -498,9 +522,12 @@
 
     /* 手機端 RWD 適配 */
     @media (max-width: 768px) {
-      body { padding: 14px 12px 60px; }
+      body { padding: 20px 12px 60px; }
       .admin-group, .edit-panel { display: none !important; }
       .rack-bolt { display: none; }
+
+      .site-main-title { font-size: 1.5rem; }
+      .site-main-title span { font-size: 1.1rem; }
 
       .master-rack-deck { padding: 10px 12px; gap: 10px; }
       .deck-core-left { width: 100%; justify-content: space-between; }
@@ -510,8 +537,7 @@
       .volume-ctrl-box { display: none; }
       .track-subtitle-box { width: 100%; }
 
-      .sub-control-panel { padding: 8px 10px; }
-      .panel-brand-title { font-size: 0.85rem; }
+      .tag-cloud-panel { padding: 10px 12px; }
 
       .cassette-grid {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -533,8 +559,15 @@
   <canvas id="starfield"></canvas>
 
   <div class="stage-container">
-    <!-- 主機架控制艙 -->
-    <header class="master-rack-deck">
+    
+    <!-- 1. 網站最頂端主標題 -->
+    <header class="site-master-header">
+      <h1 class="site-main-title">CHRONO DECK 1985 <span>// 時空磁軸</span></h1>
+      <div class="site-subtitle">ARCHIVE OF THE ANALOG SIGNALS & RETRO MEMORIES</div>
+    </header>
+
+    <!-- 2. 長條音樂控制艙 -->
+    <section class="master-rack-deck">
       <div class="rack-bolt"></div>
 
       <div class="deck-core-left">
@@ -580,18 +613,13 @@
       </div>
 
       <div class="rack-bolt"></div>
-    </header>
+    </section>
 
-    <!-- 次級副面板：正式烙印 CHRONO DECK 1985 銘牌 -->
-    <div class="sub-control-panel">
-      <div class="panel-brand-title">
-        CHRONO DECK 1985
-        <span class="panel-brand-sub">// 時空磁軸</span>
-      </div>
-
-      <div class="filter-group" id="filterBar">
-        <span class="filter-label">ARTIST:</span>
-        <button class="filter-btn active" onclick="setFilter('ALL')">ALL 全部</button>
+    <!-- 3. 標籤雲快速點選區 (Tag Cloud) 與管理按鍵 -->
+    <section class="tag-cloud-panel">
+      <div class="tag-cloud-left" id="tagCloudContainer">
+        <span class="tag-cloud-label">TAG CLOUD:</span>
+        <button class="cloud-tag active" onclick="filterByTag('ALL')">ALL 全部</button>
       </div>
 
       <div class="admin-group">
@@ -601,9 +629,9 @@
         <button onclick="document.getElementById('importFile').click()">匯入 JSON</button>
         <input type="file" id="importFile" accept=".json" style="display:none;">
       </div>
-    </div>
+    </section>
 
-    <!-- 卡帶展示網格 -->
+    <!-- 4. 卡帶展示網格 -->
     <main class="cassette-grid" id="gridContainer"></main>
   </div>
 
@@ -688,7 +716,7 @@
 
     let isEditing = false;
     let isShuffle = false;
-    let currentFilter = 'ALL';
+    let activeTag = 'ALL';
     let currentTrackIndex = 0;
     let eqInterval = null;
 
@@ -698,6 +726,7 @@
         title: "負けないで",
         artist: "ZARD",
         subtitle: "負けないで (ZARD / 坂井泉水)",
+        tags: "ZARD, 90s, 應援曲, 搖滾",
         audioUrl: "https://www.image2url.com/r2/default/audio/1788443714852-c2a78ad9-9fe1-4d1f-b615-c71f6871d33c.mp3",
         coverUrl: "https://picsum.photos/600/400?grayscale&random=93",
         notes: "負けないで もう少し\n最後まで 走り抜けて\nどんなに 離れてても\n心は そばにいるわ\n追いかけて 遙かな夢を..."
@@ -707,6 +736,7 @@
         title: "突然",
         artist: "ZARD",
         subtitle: "突然 (ZARD / 坂井泉水)",
+        tags: "ZARD, J-Pop, 青春, 織田哲郎",
         audioUrl: "",
         coverUrl: "https://picsum.photos/600/400?grayscale&random=94",
         notes: "突然の風に吹かれて 夢中で駆け抜けた\nいつも僕のそばに君がいて\nあの日の約束は 今も胸の奥にある\nめぐる季節を越えて..."
@@ -716,6 +746,7 @@
         title: "きっと忘れない",
         artist: "ZARD",
         subtitle: "きっと忘れない (ZARD / 坂井泉水)",
+        tags: "ZARD, 抒情, 白鳥麗子, 經典",
         audioUrl: "",
         coverUrl: "https://picsum.photos/600/400?grayscale&random=95",
         notes: "きっと忘れない 眩しい笑顔で\nWash away, 洗い流して\n遠く離れても 心はいつも\nあなたのそばにいるから..."
@@ -725,7 +756,7 @@
     let musicList = [];
 
     const gridContainer = document.getElementById('gridContainer');
-    const filterBar = document.getElementById('filterBar');
+    const tagCloudContainer = document.getElementById('tagCloudContainer');
     const trackSelect = document.getElementById('trackSelect');
     const audio = document.getElementById('globalAudio');
     const lcdTimer = document.getElementById('lcdTimer');
@@ -767,7 +798,7 @@
         }
       }
 
-      renderFilters();
+      renderTagCloud();
       renderSelector();
       renderCards();
       if (musicList.length > 0) {
@@ -776,21 +807,37 @@
       }
     }
 
-    function renderFilters() {
-      const artists = ['ALL', ...new Set(musicList.map(item => item.artist).filter(Boolean))];
-      filterBar.innerHTML = '<span class="filter-label">ARTIST:</span>';
-      artists.forEach(artist => {
+    /* ===== 標籤雲動態提取與渲染 ===== */
+    function renderTagCloud() {
+      const allTagsSet = new Set();
+      musicList.forEach(item => {
+        if (item.tags) {
+          item.tags.split(/[,，\s]+/).filter(Boolean).forEach(tag => allTagsSet.add(tag.trim()));
+        }
+      });
+
+      tagCloudContainer.innerHTML = '<span class="tag-cloud-label">TAG CLOUD:</span>';
+      
+      // ALL 全部標籤
+      const allBtn = document.createElement('button');
+      allBtn.className = `cloud-tag ${activeTag === 'ALL' ? 'active' : ''}`;
+      allBtn.innerText = 'ALL 全部';
+      allBtn.onclick = () => filterByTag('ALL');
+      tagCloudContainer.appendChild(allBtn);
+
+      // 動態標籤
+      allTagsSet.forEach(tag => {
         const btn = document.createElement('button');
-        btn.className = `filter-btn ${currentFilter === artist ? 'active' : ''}`;
-        btn.innerText = artist;
-        btn.onclick = () => setFilter(artist);
-        filterBar.appendChild(btn);
+        btn.className = `cloud-tag ${activeTag === tag ? 'active' : ''}`;
+        btn.innerText = `# ${tag}`;
+        btn.onclick = () => filterByTag(tag);
+        tagCloudContainer.appendChild(btn);
       });
     }
 
-    function setFilter(artist) {
-      currentFilter = artist;
-      renderFilters();
+    function filterByTag(tag) {
+      activeTag = tag;
+      renderTagCloud();
       renderCards();
     }
 
@@ -807,7 +854,10 @@
     function renderCards() {
       gridContainer.innerHTML = '';
       musicList.forEach((item, index) => {
-        const isVisible = currentFilter === 'ALL' || item.artist === currentFilter;
+        // 標籤雲篩選邏輯
+        const itemTags = item.tags ? item.tags.split(/[,，\s]+/).filter(Boolean) : [];
+        const isVisible = activeTag === 'ALL' || itemTags.includes(activeTag) || item.artist === activeTag;
+
         const card = document.createElement('div');
         card.className = `cassette-card ${isEditing ? 'editing' : ''} ${!isVisible ? 'is-hidden' : ''}`;
         card.dataset.index = index;
@@ -835,8 +885,10 @@
           <div class="edit-panel">
             <label>曲名：</label>
             <input type="text" value="${item.title}" onchange="updateTrackData(${index}, 'title', this.value)">
-            <label>歌手分類：</label>
+            <label>歌手：</label>
             <input type="text" value="${item.artist}" onchange="updateTrackData(${index}, 'artist', this.value)">
+            <label>曲目標籤 (逗號分隔)：</label>
+            <input type="text" value="${item.tags || ''}" onchange="updateTrackData(${index}, 'tags', this.value)">
             <label>標註：</label>
             <input type="text" value="${item.subtitle || ''}" onchange="updateTrackData(${index}, 'subtitle', this.value)">
             <label>MP3 網址：</label>
@@ -852,7 +904,7 @@
     function updateTrackData(index, field, value) {
       musicList[index][field] = value;
       saveToStorage();
-      if (field === 'artist') renderFilters();
+      if (field === 'tags') renderTagCloud();
       if (field === 'title' || field === 'artist') renderSelector();
     }
 
@@ -998,13 +1050,14 @@
         id: Date.now(),
         title: "未命名曲目.mp3",
         artist: "自訂歌手",
+        tags: "新標籤, 自訂曲風",
         subtitle: "未命名曲目 (新標籤)",
         audioUrl: "",
         coverUrl: "https://picsum.photos/600/400",
         notes: ""
       });
       saveToStorage();
-      renderFilters();
+      renderTagCloud();
       renderSelector();
       renderCards();
     };
@@ -1012,7 +1065,7 @@
     function deleteCard(index) {
       musicList.splice(index, 1);
       saveToStorage();
-      renderFilters();
+      renderTagCloud();
       renderSelector();
       renderCards();
     }
@@ -1033,8 +1086,8 @@
         try {
           musicList = JSON.parse(evt.target.result);
           saveToStorage();
-          currentFilter = 'ALL';
-          renderFilters();
+          activeTag = 'ALL';
+          renderTagCloud();
           renderSelector();
           renderCards();
           alert("CHRONO DECK 資料庫載入成功，已永久記錄至瀏覽器！");
