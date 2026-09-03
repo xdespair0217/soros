@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>CASSETTE DECK SYSTEM</title>
+  <title>CASSETTE DECK SYSTEM - MASTER CONSOLE</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,12 +38,12 @@
       background-color: var(--bg-dark);
       color: var(--text-light);
       min-height: 100vh;
-      padding: 24px 20px 80px;
+      padding: 30px 24px 80px;
       overflow-x: hidden;
       position: relative;
     }
 
-    /* Space Trip 橫移星空背景 */
+    /* Space Trip 星空畫布背景 */
     #starfield {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -302,7 +302,11 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      transition: transform 0.2s ease;
+      transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    .cassette-card:hover {
+      transform: translateY(-4px);
+      border-color: #485368;
     }
     .cassette-card.is-hidden { display: none; }
 
@@ -357,6 +361,7 @@
       font-weight: 600;
       border-radius: 2px;
     }
+    .card-btn:hover { color: #fff; border-color: #555; }
 
     .mini-reel-window {
       width: 50px; height: 24px;
@@ -382,6 +387,7 @@
       padding-top: 6px;
     }
     .editing .edit-panel { display: flex; }
+    .edit-panel label { font-family: var(--font-tech); font-size: 0.7rem; color: #888; }
     .edit-panel input, .edit-panel textarea {
       background: #0e1014;
       border: 1px solid #333d4e;
@@ -473,61 +479,30 @@
       overflow-y: auto;
     }
 
-    /* ===== 手機端專屬適配（全面關閉管理、極致純粹） ===== */
+    /* 手機端 RWD 適配 */
     @media (max-width: 768px) {
       body { padding: 14px 12px 60px; }
-      
-      /* 1. 手機端徹底隱藏所有編輯與管理按鍵 */
-      .admin-group, .edit-panel {
-        display: none !important;
-      }
+      .admin-group, .edit-panel { display: none !important; }
       .rack-bolt { display: none; }
 
-      /* 2. 主機架轉化為輕巧雙層控制艙 */
-      .master-rack-deck {
-        padding: 10px 12px;
-        gap: 10px;
-      }
-      .deck-core-left {
-        width: 100%;
-        justify-content: space-between;
-      }
-      .deck-select {
-        flex: 1;
-        min-width: 0;
-        font-size: 0.82rem;
-      }
-      .deck-core-center {
-        width: 100%;
-        justify-content: space-between;
-      }
-      .deck-core-right {
-        width: 100%;
-        justify-content: space-between;
-      }
-      .volume-ctrl-box {
-        display: none; /* 手機端直接利用硬體音量鍵即可，騰出視覺空間 */
-      }
-      .track-subtitle-box {
-        width: 100%;
-      }
+      .master-rack-deck { padding: 10px 12px; gap: 10px; }
+      .deck-core-left { width: 100%; justify-content: space-between; }
+      .deck-select { flex: 1; min-width: 0; font-size: 0.82rem; }
+      .deck-core-center { width: 100%; justify-content: space-between; }
+      .deck-core-right { width: 100%; justify-content: space-between; }
+      .volume-ctrl-box { display: none; }
+      .track-subtitle-box { width: 100%; }
 
-      /* 3. 卡帶網格單排兩列流式自適應 */
       .cassette-grid {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 14px;
       }
       .tape-window { height: 110px; }
-      .mini-reel-window { display: none; } /* 手機端卡片隱藏小視窗，留給按鍵完整寬度 */
+      .mini-reel-window { display: none; }
       .card-title { font-size: 0.82rem; }
       .card-artist { font-size: 0.7rem; }
 
-      /* 4. 燈箱改為單欄縱向展開 */
-      .lightbox-body {
-        grid-template-columns: 1fr;
-        padding: 16px;
-        gap: 14px;
-      }
+      .lightbox-body { grid-template-columns: 1fr; padding: 16px; gap: 14px; }
       .lightbox-cover { height: 180px; }
       .lightbox-meta-box { display: none; }
     }
@@ -587,7 +562,7 @@
       <div class="rack-bolt"></div>
     </header>
 
-    <!-- 分類與管理欄（手機端自動隱藏管理鈕） -->
+    <!-- 分類與管理欄 -->
     <div class="sub-control-panel">
       <div class="filter-group" id="filterBar">
         <span class="filter-label">ARTIST:</span>
@@ -606,7 +581,7 @@
     <main class="cassette-grid" id="gridContainer"></main>
   </div>
 
-  <!-- Zooming 燈箱（手機點擊即開） -->
+  <!-- Zooming 燈箱 -->
   <div class="lightbox-backdrop" id="lightboxBackdrop" onclick="closeLightbox(event)">
     <div class="lightbox-modal">
       <div class="lightbox-header">
@@ -634,7 +609,7 @@
   <audio id="globalAudio" style="display:none;"></audio>
 
   <script>
-    /* 星空 Canvas 橫移 */
+    /* ===== Space Trip 橫移星空運算 ===== */
     const canvas = document.getElementById('starfield');
     const ctx = canvas.getContext('2d');
     let width, height;
@@ -680,14 +655,18 @@
     }
     renderStars();
 
-    /* 核心邏輯 */
+    /* ===== 音訊管理與雙軌持久化核心 ===== */
+    const STORAGE_KEY = "BLACKBOX_CASSETTE_DATA_V1";
+    const REMOTE_JSON_URL = "./cassette_tape_data.json"; // 雲端同目錄下的 JSON 檔案名稱
+
     let isEditing = false;
     let isShuffle = false;
     let currentFilter = 'ALL';
     let currentTrackIndex = 0;
     let eqInterval = null;
 
-    let musicList = [
+    // 預設清單（若本機與雲端都沒有資料時啟動）
+    let defaultMusicList = [
       {
         id: 1788443714852,
         title: "負けないで",
@@ -717,6 +696,8 @@
       }
     ];
 
+    let musicList = [];
+
     const gridContainer = document.getElementById('gridContainer');
     const filterBar = document.getElementById('filterBar');
     const trackSelect = document.getElementById('trackSelect');
@@ -729,13 +710,46 @@
 
     audio.volume = 0.8;
 
-    function init() {
+    // 自動持久化：寫入 localStorage
+    function saveToStorage() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(musicList));
+      } catch(e) {
+        console.warn("無法存入本地快取", e);
+      }
+    }
+
+    // 雙軌載入程序
+    async function init() {
+      const localData = localStorage.getItem(STORAGE_KEY);
+      
+      if (localData) {
+        try {
+          musicList = JSON.parse(localData);
+        } catch(e) {
+          musicList = defaultMusicList;
+        }
+      } else {
+        // 本機無快照，嘗試自伺服器抓取 JSON
+        try {
+          const resp = await fetch(REMOTE_JSON_URL);
+          if (resp.ok) {
+            musicList = await resp.json();
+            saveToStorage();
+          } else {
+            musicList = defaultMusicList;
+          }
+        } catch(err) {
+          musicList = defaultMusicList;
+        }
+      }
+
       renderFilters();
       renderSelector();
       renderCards();
       if (musicList.length > 0) {
         trackSelect.value = 0;
-        trackSubtitle.innerText = musicList[0].subtitle;
+        trackSubtitle.innerText = musicList[0].subtitle || musicList[0].title;
       }
     }
 
@@ -797,23 +811,29 @@
           </div>
           <div class="edit-panel">
             <label>曲名：</label>
-            <input type="text" value="${item.title}" onchange="musicList[${index}].title=this.value; renderSelector(); renderCards();">
+            <input type="text" value="${item.title}" onchange="updateTrackData(${index}, 'title', this.value)">
             <label>歌手分類：</label>
-            <input type="text" value="${item.artist}" onchange="musicList[${index}].artist=this.value; renderFilters(); renderSelector(); renderCards();">
+            <input type="text" value="${item.artist}" onchange="updateTrackData(${index}, 'artist', this.value)">
             <label>標註：</label>
-            <input type="text" value="${item.subtitle || ''}" onchange="musicList[${index}].subtitle=this.value;">
+            <input type="text" value="${item.subtitle || ''}" onchange="updateTrackData(${index}, 'subtitle', this.value)">
             <label>MP3 網址：</label>
-            <input type="text" value="${item.audioUrl}" onchange="musicList[${index}].audioUrl=this.value;">
+            <input type="text" value="${item.audioUrl}" onchange="updateTrackData(${index}, 'audioUrl', this.value)">
             <label>筆記：</label>
-            <textarea rows="2" onchange="musicList[${index}].notes=this.value;">${item.notes || ''}</textarea>
+            <textarea rows="2" onchange="updateTrackData(${index}, 'notes', this.value)">${item.notes || ''}</textarea>
           </div>
         `;
         gridContainer.appendChild(card);
       });
     }
 
+    function updateTrackData(index, field, value) {
+      musicList[index][field] = value;
+      saveToStorage();
+      if (field === 'artist') renderFilters();
+      if (field === 'title' || field === 'artist') renderSelector();
+    }
+
     function handleCoverClick(index) {
-      // 電腦端開啟編輯模式時換圖；非編輯狀態或手機端點擊直接彈出精美燈箱
       if (isEditing && window.innerWidth > 768) {
         document.querySelector(`.file-input-${index}`).click();
       } else {
@@ -936,6 +956,7 @@
       const reader = new FileReader();
       reader.onload = (evt) => {
         musicList[index].coverUrl = evt.target.result;
+        saveToStorage();
         renderCards();
       };
       reader.readAsDataURL(file);
@@ -945,6 +966,7 @@
       isEditing = !isEditing;
       document.getElementById('toggleEditBtn').innerText = `EDIT 模式: ${isEditing ? '開' : '關'}`;
       document.getElementById('toggleEditBtn').classList.toggle('active', isEditing);
+      if (!isEditing) saveToStorage();
       renderCards();
     };
 
@@ -958,14 +980,21 @@
         coverUrl: "https://picsum.photos/600/400",
         notes: ""
       });
-      init();
+      saveToStorage();
+      renderFilters();
+      renderSelector();
+      renderCards();
     };
 
     function deleteCard(index) {
       musicList.splice(index, 1);
-      init();
+      saveToStorage();
+      renderFilters();
+      renderSelector();
+      renderCards();
     }
 
+    // 打包匯出 JSON 檔案
     document.getElementById('exportBtn').onclick = () => {
       const blob = new Blob([JSON.stringify(musicList, null, 2)], {type: "application/json"});
       const a = document.createElement('a');
@@ -974,6 +1003,7 @@
       a.click();
     };
 
+    // 匯入 JSON 並立即寫入瀏覽器本地快照
     document.getElementById('importFile').onchange = (e) => {
       const file = e.target.files[0];
       if (!file) return;
@@ -981,8 +1011,12 @@
       reader.onload = (evt) => {
         try {
           musicList = JSON.parse(evt.target.result);
+          saveToStorage(); // 立即永久保存
           currentFilter = 'ALL';
-          init();
+          renderFilters();
+          renderSelector();
+          renderCards();
+          alert("資料庫已成功載入並同步至瀏覽器快取！");
         } catch(err) { alert("JSON 格式錯誤"); }
       };
       reader.readAsText(file);
