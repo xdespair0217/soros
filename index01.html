@@ -7,7 +7,7 @@
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
-  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=M+PLUS+1p:wght@400;500;700&family=VT323&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@400;500;700&family=VT323&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
 
   <style>
     :root {
@@ -22,7 +22,7 @@
       --text-light: #e2e6ee;
       
       --font-jp: "Zen Kaku Gothic New", "M PLUS 1p", "Tahoma", sans-serif;
-      --font-tech: "Chakra Petch", sans-serif;
+      --font-tech: Consolas, Monaco, "Courier New", monospace;
       --font-lcd: "VT323", monospace;
     }
 
@@ -35,7 +35,7 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* 文字反白選取顏色 (琥珀金亮眼高對比) */
+    /* 文字反白選取高亮 (琥珀金高對比) */
     ::selection {
       background: var(--amber);
       color: #0d0f12;
@@ -491,7 +491,7 @@
       font-size: 0.75rem;
     }
 
-    /* ===== 5. 燈箱 Modal (升級放大與精緻化) ===== */
+    /* ===== 5. 燈箱 Modal (Consolas 字型強化與放大版) ===== */
     .lightbox-backdrop {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
@@ -510,7 +510,7 @@
 
     .lightbox-modal {
       width: 100%;
-      max-width: 880px; /* 從 680px 放大至 880px */
+      max-width: 880px;
       background: #12151b;
       border: 2px solid #2d3442;
       border-radius: 10px;
@@ -554,7 +554,7 @@
 
     .lightbox-body {
       display: grid;
-      grid-template-columns: 280px 1fr; /* 左側封面放大為 280px */
+      grid-template-columns: 280px 1fr;
       gap: 24px;
       padding: 24px;
       overflow-y: auto;
@@ -573,9 +573,9 @@
       box-shadow: 0 8px 20px rgba(0,0,0,0.6);
     }
 
-    /* 左下角歌曲實際資訊框 (動態資料注入) */
+    /* 左下角歌曲實際資訊框 (Consolas 樣式) */
     .lightbox-info-box {
-      font-family: var(--font-tech);
+      font-family: Consolas, Monaco, "Courier New", monospace;
       font-size: 0.74rem;
       color: #8f9aa9;
       background: #0a0c10;
@@ -597,11 +597,13 @@
       letter-spacing: 0.08em;
       text-transform: uppercase;
       opacity: 0.85;
+      font-family: Consolas, Monaco, "Courier New", monospace;
     }
     .info-value {
       color: #cfd5e0;
       word-break: break-all;
       line-height: 1.3;
+      font-family: Consolas, Monaco, "Courier New", monospace;
     }
     .info-tags-list {
       display: flex;
@@ -616,6 +618,7 @@
       padding: 1px 6px;
       border-radius: 3px;
       font-size: 0.68rem;
+      font-family: Consolas, Monaco, "Courier New", monospace;
     }
 
     .lightbox-right {
@@ -637,8 +640,9 @@
       font-weight: 500;
     }
     
-    /* 歌詞/筆記框與獨立卷軸 */
+    /* 歌詞/筆記框 (Consolas 樣式) */
     .lightbox-notes-content {
+      font-family: Consolas, Monaco, "Courier New", monospace;
       font-size: 0.92rem;
       line-height: 1.9;
       color: #b0bccf;
@@ -778,7 +782,7 @@
     <main class="cassette-grid" id="gridContainer"></main>
   </div>
 
-  <!-- Zooming 放大版精緻燈箱 -->
+  <!-- Zooming 放大版燈箱 -->
   <div class="lightbox-backdrop" id="lightboxBackdrop" onclick="closeLightbox(event)">
     <div class="lightbox-modal">
       <div class="lightbox-header">
@@ -1107,7 +1111,7 @@
       }
     }
 
-    /* 渲染並開啟燈箱 (注入動態詳細數據) */
+    /* 渲染並開啟燈箱 */
     function openLightbox(index) {
       const item = musicList[index];
       document.getElementById('lbCover').src = item.coverUrl;
@@ -1263,7 +1267,7 @@
       renderCards();
     };
 
-    /* 新增卡片排在陣列最前端 (unshift) */
+    /* 新增卡片插至陣列最前端 (unshift) */
     document.getElementById('addCardBtn').onclick = () => {
       musicList.unshift({
         id: Date.now(),
