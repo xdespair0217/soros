@@ -16,6 +16,7 @@
       --card-border: #2b313d;
       --tape-sticker: #ded7be;
       --amber: #ffb800;
+      --amber-dim: rgba(255, 184, 0, 0.15);
       --cyan: #38bdf8;
       --text-dim: #737c8e;
       --text-light: #e2e6ee;
@@ -32,6 +33,36 @@
       font-family: var(--font-jp); 
       -webkit-font-smoothing: antialiased; 
       -webkit-tap-highlight-color: transparent;
+    }
+
+    /* 文字反白選取顏色 (琥珀金亮眼高對比) */
+    ::selection {
+      background: var(--amber);
+      color: #0d0f12;
+    }
+    ::-moz-selection {
+      background: var(--amber);
+      color: #0d0f12;
+    }
+
+    /* 全域精緻電驛滾動條樣式 */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #090b0e;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #2a3342;
+      border-radius: 3px;
+      border: 1px solid #161b24;
+      transition: background 0.2s ease;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--amber);
+      box-shadow: 0 0 8px rgba(255, 184, 0, 0.5);
     }
 
     body {
@@ -313,7 +344,6 @@
       font-weight: 700;
     }
 
-    /* 折疊切換按鈕 */
     .expand-toggle-btn {
       background: transparent;
       border: 1px solid #3d4656;
@@ -327,7 +357,6 @@
     }
     .expand-toggle-btn:hover { border-color: var(--amber); color: var(--amber); }
 
-    /* 抽屜內標籤區域 */
     .overflow-tags-drawer {
       display: none;
       flex-wrap: wrap;
@@ -462,12 +491,12 @@
       font-size: 0.75rem;
     }
 
-    /* 燈箱 Modal */
+    /* ===== 5. 燈箱 Modal (升級放大與精緻化) ===== */
     .lightbox-backdrop {
       position: fixed;
       top: 0; left: 0; width: 100vw; height: 100vh;
-      background: rgba(0, 0, 0, 0.88);
-      backdrop-filter: blur(14px);
+      background: rgba(0, 0, 0, 0.9);
+      backdrop-filter: blur(16px);
       z-index: 10000;
       display: flex;
       align-items: center;
@@ -475,74 +504,154 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.25s ease;
-      padding: 16px;
+      padding: 24px;
     }
     .lightbox-backdrop.active { opacity: 1; pointer-events: auto; }
 
     .lightbox-modal {
       width: 100%;
-      max-width: 680px;
-      background: #14171d;
-      border: 2px solid #323846;
-      border-radius: 8px;
+      max-width: 880px; /* 從 680px 放大至 880px */
+      background: #12151b;
+      border: 2px solid #2d3442;
+      border-radius: 10px;
       overflow: hidden;
-      transform: scale(0.92);
-      transition: transform 0.25s ease;
+      transform: scale(0.94);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       display: flex;
       flex-direction: column;
-      max-height: 85vh;
+      max-height: 90vh;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.95), 0 0 30px rgba(0, 0, 0, 0.8);
     }
     .lightbox-backdrop.active .lightbox-modal { transform: scale(1); }
 
     .lightbox-header {
-      height: 40px;
-      background: #1a1e27;
-      border-bottom: 1px solid #2c3240;
+      height: 44px;
+      background: #171b24;
+      border-bottom: 1px solid #252c38;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 16px;
+      padding: 0 20px;
     }
-    .lightbox-tag { font-family: var(--font-tech); font-size: 0.75rem; color: var(--amber); font-weight: 700; }
-    .lightbox-close { background: transparent; border: none; color: #aaa; font-size: 1.2rem; cursor: pointer; }
+    .lightbox-tag { 
+      font-family: var(--font-tech); 
+      font-size: 0.8rem; 
+      color: var(--amber); 
+      font-weight: 700;
+      letter-spacing: 0.1em;
+    }
+    .lightbox-close { 
+      background: transparent; 
+      border: none; 
+      color: #8893a6; 
+      font-size: 1.3rem; 
+      cursor: pointer;
+      line-height: 1;
+      padding: 4px;
+      transition: color 0.15s ease;
+    }
+    .lightbox-close:hover { color: #ffffff; }
 
     .lightbox-body {
       display: grid;
-      grid-template-columns: 260px 1fr;
-      gap: 20px;
-      padding: 20px;
+      grid-template-columns: 280px 1fr; /* 左側封面放大為 280px */
+      gap: 24px;
+      padding: 24px;
       overflow-y: auto;
+    }
+    .lightbox-left {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
     }
     .lightbox-cover {
       width: 100%;
-      height: 220px;
+      height: 260px;
       object-fit: cover;
-      border-radius: 4px;
-      border: 1px solid #282f3d;
+      border-radius: 6px;
+      border: 1px solid #262c38;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
     }
-    .lightbox-meta-box {
+
+    /* 左下角歌曲實際資訊框 (動態資料注入) */
+    .lightbox-info-box {
       font-family: var(--font-tech);
-      font-size: 0.72rem;
-      color: #737c8e;
-      line-height: 1.6;
-      border-left: 2px solid #282f3d;
-      padding-left: 10px;
-      margin-top: 10px;
+      font-size: 0.74rem;
+      color: #8f9aa9;
+      background: #0a0c10;
+      border: 1px solid #1f2530;
+      border-radius: 6px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
-    .lightbox-title { font-size: 1.25rem; font-weight: 700; color: #fff; }
-    .lightbox-artist { font-size: 0.88rem; color: var(--amber); margin-top: 4px; }
+    .info-row {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .info-label {
+      font-size: 0.68rem;
+      color: var(--amber);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.85;
+    }
+    .info-value {
+      color: #cfd5e0;
+      word-break: break-all;
+      line-height: 1.3;
+    }
+    .info-tags-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 2px;
+    }
+    .info-tag-pill {
+      background: #171b22;
+      border: 1px solid #2c3340;
+      color: #9cb1ca;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 0.68rem;
+    }
+
+    .lightbox-right {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 0;
+    }
+    .lightbox-title { 
+      font-size: 1.45rem; 
+      font-weight: 700; 
+      color: #ffffff;
+      letter-spacing: 0.04em;
+    }
+    .lightbox-artist { 
+      font-size: 0.92rem; 
+      color: var(--amber); 
+      margin-top: 4px;
+      font-weight: 500;
+    }
+    
+    /* 歌詞/筆記框與獨立卷軸 */
     .lightbox-notes-content {
-      font-size: 0.85rem;
-      line-height: 1.8;
-      color: #a8b3c4;
+      font-size: 0.92rem;
+      line-height: 1.9;
+      color: #b0bccf;
       white-space: pre-wrap;
-      background: #0d0f13;
-      padding: 14px;
-      border-radius: 4px;
-      border: 1px solid #1e222b;
-      margin-top: 12px;
-      max-height: 240px;
+      background: #090b0e;
+      padding: 18px 20px;
+      border-radius: 6px;
+      border: 1px solid #1c212b;
+      margin-top: 14px;
+      flex: 1;
       overflow-y: auto;
+      max-height: 380px;
+      position: relative;
     }
 
     /* 手機端 RWD 適配 */
@@ -575,7 +684,8 @@
 
       .lightbox-body { grid-template-columns: 1fr; padding: 16px; gap: 14px; }
       .lightbox-cover { height: 180px; }
-      .lightbox-meta-box { display: none; }
+      .lightbox-info-box { display: none; }
+      .lightbox-notes-content { max-height: 250px; }
     }
   </style>
 </head>
@@ -645,7 +755,6 @@
       <div class="tag-cloud-top-row">
         <div class="tag-cloud-left" id="primaryTagsContainer">
           <span class="tag-cloud-label">TAGS:</span>
-          <!-- 主標籤由 JS 動態渲染 -->
         </div>
 
         <div style="display: flex; align-items: center; gap: 8px;">
@@ -669,7 +778,7 @@
     <main class="cassette-grid" id="gridContainer"></main>
   </div>
 
-  <!-- Zooming 燈箱 -->
+  <!-- Zooming 放大版精緻燈箱 -->
   <div class="lightbox-backdrop" id="lightboxBackdrop" onclick="closeLightbox(event)">
     <div class="lightbox-modal">
       <div class="lightbox-header">
@@ -677,16 +786,31 @@
         <button class="lightbox-close" onclick="closeLightboxDirect()">✕</button>
       </div>
       <div class="lightbox-body">
-        <div>
+        <div class="lightbox-left">
           <img class="lightbox-cover" id="lbCover" src="" alt="Album Cover">
-          <div class="lightbox-meta-box">
-            <div>SYSTEM: CHRONO DECK 1985</div>
-            <div>STATUS: LOADED</div>
-            <div>STREAM: HI-RES 44.1kHz</div>
-            <div>DECK REF: BLACK BOX ARCHIVE</div>
+          
+          <!-- 左下角動態曲目資訊面板 -->
+          <div class="lightbox-info-box">
+            <div class="info-row">
+              <span class="info-label">TRACK ID / ARCHIVE REF</span>
+              <span class="info-value" id="lbInfoId">--</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">SUBTITLE / 標註</span>
+              <span class="info-value" id="lbInfoSubtitle">--</span>
+            </div>
+            <div class="info-row">
+              <span class="info-label">TAGS / 分類標籤</span>
+              <div class="info-tags-list" id="lbInfoTags"></div>
+            </div>
+            <div class="info-row">
+              <span class="info-label">AUDIO STREAM STATUS</span>
+              <span class="info-value" id="lbInfoAudioStatus">--</span>
+            </div>
           </div>
         </div>
-        <div>
+
+        <div class="lightbox-right">
           <div class="lightbox-title" id="lbTitle">曲名</div>
           <div class="lightbox-artist" id="lbArtist">歌手</div>
           <div class="lightbox-notes-content" id="lbNotes">筆記與歌詞內容</div>
@@ -863,14 +987,13 @@
       primaryTagsContainer.innerHTML = '<span class="tag-cloud-label">TAGS:</span>';
       overflowTagsDrawer.innerHTML = '';
 
-      // ALL 按鍵
       const allBtn = document.createElement('button');
       allBtn.className = `cloud-tag ${activeTag === 'ALL' ? 'active' : ''}`;
       allBtn.innerText = 'ALL 全部';
       allBtn.onclick = () => filterByTag('ALL');
       primaryTagsContainer.appendChild(allBtn);
 
-      const PRIMARY_LIMIT = 8; // 前 8 個標籤常駐顯示
+      const PRIMARY_LIMIT = 8;
       const primaryTags = tagsArray.slice(0, PRIMARY_LIMIT);
       const overflowTags = tagsArray.slice(PRIMARY_LIMIT);
 
@@ -984,13 +1107,40 @@
       }
     }
 
+    /* 渲染並開啟燈箱 (注入動態詳細數據) */
     function openLightbox(index) {
       const item = musicList[index];
       document.getElementById('lbCover').src = item.coverUrl;
       document.getElementById('lbTitle').innerText = item.title;
       document.getElementById('lbArtist').innerText = item.artist;
       document.getElementById('lbNotes').innerText = item.notes || "（暫無歌詞與筆記內容）";
-      document.getElementById('lbTag').innerText = `CHRONO DECK 1985 // [TRACK 0${index + 1}]`;
+      
+      const trackNumber = String(index + 1).padStart(2, '0');
+      document.getElementById('lbTag').innerText = `CHRONO DECK 1985 // [TRACK ${trackNumber}]`;
+      
+      // 動態注入左下角資訊框內容
+      document.getElementById('lbInfoId').innerText = `REEL-${item.id || Date.now()}`;
+      document.getElementById('lbInfoSubtitle').innerText = item.subtitle || "N/A (未設定)";
+      document.getElementById('lbInfoAudioStatus').innerText = item.audioUrl ? "ONLINE // 44.1kHz Hi-Res" : "NO STREAM LINK";
+      
+      const tagsContainer = document.getElementById('lbInfoTags');
+      tagsContainer.innerHTML = '';
+      if (item.tags) {
+        const tags = item.tags.split(/[,，\s]+/).filter(Boolean);
+        if (tags.length > 0) {
+          tags.forEach(t => {
+            const span = document.createElement('span');
+            span.className = 'info-tag-pill';
+            span.innerText = `#${t}`;
+            tagsContainer.appendChild(span);
+          });
+        } else {
+          tagsContainer.innerText = "--";
+        }
+      } else {
+        tagsContainer.innerText = "--";
+      }
+
       document.getElementById('lightboxBackdrop').classList.add('active');
     }
 
@@ -1113,8 +1263,9 @@
       renderCards();
     };
 
+    /* 新增卡片排在陣列最前端 (unshift) */
     document.getElementById('addCardBtn').onclick = () => {
-      musicList.push({
+      musicList.unshift({
         id: Date.now(),
         title: "未命名曲目.mp3",
         artist: "自訂歌手",
