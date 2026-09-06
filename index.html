@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Soros — Personal Archive</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand+SC&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600&family=Patrick+Hand+SC&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
   
   <style>
     :root {
@@ -64,7 +64,7 @@
         0 30px 80px rgba(0, 0, 0, 0.65),
         0 0 40px rgba(78, 116, 175, 0.15),
         0 0 1px rgba(255, 255, 255, 0.25);
-      padding: 3.5rem 4rem;
+      padding: 3.2rem 4rem 3rem 4rem;
       display: flex;
       flex-direction: column;
       backdrop-filter: blur(8px);
@@ -74,8 +74,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 1rem;
-      margin-bottom: 2.5rem;
+      padding-bottom: 0.8rem;
+      margin-bottom: 1.8rem; /* 往上縮小距離 */
       border-bottom: 1px solid var(--border-subtle);
     }
 
@@ -103,7 +103,7 @@
       justify-content: space-between;
       align-items: flex-start;
       gap: 3rem;
-      margin-bottom: 2.8rem;
+      margin-bottom: 1.2rem; /* 緊湊排版，向上靠攏 */
     }
 
     .hero-content {
@@ -117,7 +117,7 @@
       line-height: 0.95;
       color: var(--text-main);
       text-transform: uppercase;
-      margin-bottom: 1rem;
+      margin-bottom: 0.8rem;
       display: flex;
       align-items: baseline;
       gap: 0.6rem;
@@ -129,20 +129,24 @@
       font-size: 4.5rem;
     }
 
+    /* 中文宣言 */
     .hero-bio {
-      font-family: 'Patrick Hand SC', cursive, sans-serif;
-      font-size: 1.35rem;
-      line-height: 1.55;
-      letter-spacing: 0.04em;
-      color: #383632;
-      max-width: 610px;
-      margin-bottom: 1.8rem;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.05rem;
+      line-height: 1.85;
+      letter-spacing: 0.05em;
+      color: #33312c;
+      max-width: 630px;
+      margin-bottom: 1.25rem; /* 往上縮小距離 */
+      font-weight: 400;
     }
 
+    /* 可點選標籤按鈕群 */
     .tags-row {
       display: flex;
       flex-wrap: wrap;
       gap: 0.65rem;
+      margin-bottom: 2rem;
     }
 
     .tag-item {
@@ -150,11 +154,30 @@
       font-size: 1.05rem;
       letter-spacing: 0.08em;
       color: var(--accent-navy);
-      background: rgba(24, 51, 89, 0.05);
-      border: 1px solid rgba(24, 51, 89, 0.2);
-      padding: 0.2rem 0.75rem;
+      background: rgba(24, 51, 89, 0.04);
+      border: 1px solid rgba(24, 51, 89, 0.22);
+      padding: 0.25rem 0.85rem;
       border-radius: 4px;
       text-transform: uppercase;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .tag-item:hover {
+      background: rgba(24, 51, 89, 0.12);
+      border-color: var(--accent-navy);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(24, 51, 89, 0.08);
+      color: #0d2038;
+    }
+
+    .tag-item:active {
+      transform: translateY(0);
+      background: rgba(24, 51, 89, 0.2);
     }
 
     /* 正方形圓角頭像 */
@@ -296,35 +319,32 @@
       font-weight: 600;
     }
 
-    /* ---------------------------------------------------- */
-    /* 手機端專屬調校 (Mobile Optimization: Compact 2x2 Grid) */
-    /* ---------------------------------------------------- */
+    /* 手機端 2x2 宮格 */
     @media (max-width: 768px) {
       body {
         padding: 0.75rem 0.5rem;
       }
 
       .sheet-container {
-        padding: 1.8rem 1.4rem;
+        padding: 1.6rem 1.2rem;
         border-radius: 10px;
       }
 
       .top-bar {
-        margin-bottom: 1.5rem;
-        padding-bottom: 0.8rem;
+        margin-bottom: 1.2rem;
+        padding-bottom: 0.6rem;
       }
 
-      /* 頂部姓名與頭像左右並排保持緊湊 */
       .hero-section {
         flex-direction: row;
         align-items: center;
         gap: 1rem;
-        margin-bottom: 1.2rem;
+        margin-bottom: 0.8rem;
       }
 
       .hand-headline {
         font-size: 2.8rem;
-        margin-bottom: 0.2rem;
+        margin-bottom: 0.1rem;
       }
 
       .hand-headline .accent-mark {
@@ -353,30 +373,29 @@
       }
 
       .hero-bio {
-        font-size: 1.05rem;
-        line-height: 1.45;
-        margin-bottom: 1.1rem;
+        font-size: 0.95rem;
+        line-height: 1.7;
+        margin-bottom: 0.9rem;
       }
 
       .tags-row {
         gap: 0.4rem;
-        margin-bottom: 1.4rem;
+        margin-bottom: 1.2rem;
       }
 
       .tag-item {
         font-size: 0.88rem;
-        padding: 0.15rem 0.55rem;
+        padding: 0.2rem 0.6rem;
       }
 
       .section-header {
-        margin-bottom: 0.8rem;
+        margin-bottom: 0.7rem;
       }
 
       .section-title {
         font-size: 1.2rem;
       }
 
-      /* 重點：手機端維持 2x2 雙欄宮格，一次看齊四個框框 */
       .cards-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 0.65rem;
@@ -395,12 +414,11 @@
       }
 
       .card-title {
-        font-size: 1.08rem;
+        font-size: 1.05rem;
         line-height: 1.15;
         margin-bottom: 0;
       }
 
-      /* 手機端隱藏冗長說明，保持畫面俐落純淨 */
       .card-desc {
         display: none;
       }
@@ -438,19 +456,20 @@
       </div>
     </section>
 
-    <!-- 簡介與標籤 -->
+    <!-- 中文末世告誡宣言 -->
     <p class="hero-bio">
-      Driven by boundless curiosity for the unknown and inexplicable. Exploring the intersections of classical literature, philosophical discourse, and analytical detective logic—while documenting gameplay and cognitive journeys across digital realms. A quiet observatory for deconstructing truth and uncharted mysteries.
+      「給未來的你們：這個世界已經崩壞。當永夜的酸雨淹沒霓虹，靈魂皆化作隨風消逝的代碼殘渣。我自舊時代穿梭而來，在此立起一座時空錨點，以哲思與邏輯之理勘破末日迷局。黑盒子裡記錄的不是哀歌，而是穿透死局的真相與道火。若你們已在深淵，這便是我留給未來的解密密碼。」
     </p>
 
+    <!-- 可點選標籤群（預留連結功能） -->
     <div class="tags-row">
-      <span class="tag-item">Logic & Mystery</span>
-      <span class="tag-item">Philosophy & Letters</span>
-      <span class="tag-item">Gameplay Archives</span>
-      <span class="tag-item">Deconstruction</span>
+      <a href="#logic-mystery" class="tag-item">Logic & Mystery</a>
+      <a href="#philosophy-letters" class="tag-item">Philosophy & Letters</a>
+      <a href="#gameplay-archives" class="tag-item">Gameplay Archives</a>
+      <a href="#deconstruction" class="tag-item">Deconstruction</a>
     </div>
 
-    <!-- 底部功能卡片區塊（手機端為 2x2 宮格） -->
+    <!-- 底部功能卡片區塊 -->
     <section class="links-section">
       <div class="section-header">
         <span class="section-number">01</span>
@@ -458,34 +477,38 @@
       </div>
 
       <div class="cards-grid">
-        <a href="#" class="link-card" target="_blank">
+        <!-- 卡片 1: 黑盒子數位觀測站 -->
+        <a href="https://xdespair0217.github.io/head/" class="link-card" target="_blank" rel="noopener noreferrer">
           <div>
-            <div class="card-category">Media / Broadcast</div>
-            <div class="card-title">GAMEPLAY CHRONICLES</div>
-            <div class="card-desc">Curated game recordings, mechanic breakdowns, and virtual world exploration.</div>
+            <div class="card-category">Observatory / Core</div>
+            <div class="card-title">BLACK BOX OBSERVATORY</div>
+            <div class="card-desc">黑盒子數位觀測站 · Truth deconstruction, logic models, and mystery investigations.</div>
           </div>
           <div class="card-arrow">↗</div>
         </a>
 
-        <a href="#" class="link-card" target="_blank">
+        <!-- 卡片 2: CHRONO DECK 1985 -->
+        <a href="https://xdespair0217.github.io/soros/index01.html" class="link-card" target="_blank" rel="noopener noreferrer">
           <div>
-            <div class="card-category">Research / Analysis</div>
-            <div class="card-title">LOGIC & ENIGMAS</div>
-            <div class="card-desc">Rational dissections of unexplained phenomena and deductive detective models.</div>
+            <div class="card-category">Retro / Archive</div>
+            <div class="card-title">CHRONO DECK 1985</div>
+            <div class="card-desc">Chrono Deck 1985 · Interactive timeline archive, retro aesthetic, and digital archaeology.</div>
           </div>
           <div class="card-arrow">↗</div>
         </a>
 
-        <a href="#" class="link-card" target="_blank">
+        <!-- 卡片 3: AI STUDY -->
+        <a href="https://app.notion.com/p/Create-a-course-or-program-of-7-or-more-modules-7c823669668d83479c7901a4a0b194f8" class="link-card" target="_blank" rel="noopener noreferrer">
           <div>
-            <div class="card-category">Writings / Thought</div>
-            <div class="card-title">LETTERS & ESSENCE</div>
-            <div class="card-desc">Meditations on classical poetry, human civilization, and timeless philosophy.</div>
+            <div class="card-category">Knowledge / Notion</div>
+            <div class="card-title">AI STUDY LAB</div>
+            <div class="card-desc">Modular learning curriculum, artificial intelligence research, and cognition guides.</div>
           </div>
           <div class="card-arrow">↗</div>
         </a>
 
-        <a href="#" class="link-card" target="_blank">
+        <!-- 卡片 4: 預留派遣與通訊 -->
+        <a href="mailto:xdespair0217@gmail.com" class="link-card">
           <div>
             <div class="card-category">Connect / Dispatch</div>
             <div class="card-title">DISPATCH STATION</div>
